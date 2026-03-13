@@ -1,0 +1,7 @@
+# Russian translations (partial)
+
+# Email messages
+email.verification.subject: "{{.SystemName}} Подтверждение email"
+email.verification.content: "<p>Здравствуйте! Вы выполняете подтверждение email для {{.SystemName}}.</p><p>Ваш код подтверждения: <strong>{{.Code}}</strong></p><p>Код действителен {{.Minutes}} минут. Если это были не вы, просто проигнорируйте это письмо.</p>"
+email.password_reset.subject: "{{.SystemName}} Сброс пароля"
+email.password_reset.content: "<p>Здравствуйте! Вы выполняете сброс пароля для {{.SystemName}}.</p><p>Нажмите <a href='{{.Link}}'>сюда</a>, чтобы сбросить пароль.</p><p>Если ссылка не открывается, скопируйте и вставьте URL в браузер:<br> {{.Link}} </p><p>Ссылка действительна {{.Minutes}} минут. Если это были не вы, проигнорируйте это письмо.</p>"

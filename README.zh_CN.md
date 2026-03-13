@@ -471,6 +471,4 @@ docker run --name new-api -d --restart always \
 
 **[官方文档](https://docs.newapi.pro/zh/docs)** • **[问题反馈](https://github.com/Calcium-Ion/new-api/issues)** • **[最新发布](https://github.com/Calcium-Ion/new-api/releases)**
 
-<sub>Built with ❤️ by QuantumNous</sub>
-
 </div>

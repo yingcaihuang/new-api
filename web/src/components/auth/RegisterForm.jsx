@@ -267,7 +267,7 @@ const RegisterForm = () => {
       );
       const { success, message } = res.data;
       if (success) {
-        showSuccess('验证码发送成功，请检查你的邮箱！');
+        showSuccess(t('验证码发送成功，请检查邮箱！'));
         setDisableButton(true); // 发送成功后禁用按钮，开始倒计时
       } else {
         showError(message);

@@ -91,6 +91,12 @@ user.telegram_id_empty: "Telegram ID is empty!"
 user.telegram_not_bound: "This Telegram account is not bound"
 user.linux_do_id_empty: "Linux DO ID is empty!"
 
+# Email messages
+email.verification.subject: "{{.SystemName}} Email Verification"
+email.verification.content: "<p>Hello, you are verifying your email for {{.SystemName}}.</p><p>Your verification code is: <strong>{{.Code}}</strong></p><p>The verification code is valid for {{.Minutes}} minutes. If this wasn't you, please ignore this email.</p>"
+email.password_reset.subject: "{{.SystemName}} Password Reset"
+email.password_reset.content: "<p>Hello, you are resetting your {{.SystemName}} password.</p><p>Click <a href='{{.Link}}'>here</a> to reset your password.</p><p>If the link is not clickable, try the URL below or copy it into your browser:<br> {{.Link}} </p><p>The reset link is valid for {{.Minutes}} minutes. If this wasn't you, please ignore this email.</p>"
+
 # Quota messages
 quota.negative: "Quota cannot be negative!"
 quota.exceed_max: "Quota value exceeds valid range"

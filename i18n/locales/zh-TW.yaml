@@ -92,6 +92,12 @@ user.telegram_id_empty: "Telegram id 為空！"
 user.telegram_not_bound: "該 Telegram 帳號未綁定"
 user.linux_do_id_empty: "Linux DO id 為空！"
 
+# Email messages
+email.verification.subject: "{{.SystemName}}信箱驗證郵件"
+email.verification.content: "<p>您好，您正在進行{{.SystemName}}信箱驗證。</p><p>您的驗證碼為：<strong>{{.Code}}</strong></p><p>驗證碼 {{.Minutes}} 分鐘內有效，若非本人操作請忽略。</p>"
+email.password_reset.subject: "{{.SystemName}}密碼重設"
+email.password_reset.content: "<p>您好，您正在進行{{.SystemName}}密碼重設。</p><p>點擊 <a href='{{.Link}}'>此處</a> 進行密碼重設。</p><p>若連結無法點擊，請嘗試使用下方連結或將其複製到瀏覽器開啟：<br> {{.Link}} </p><p>重設連結 {{.Minutes}} 分鐘內有效，若非本人操作請忽略。</p>"
+
 # Quota messages
 quota.negative: "額度不能為負數！"
 quota.exceed_max: "額度值超出有效範圍"

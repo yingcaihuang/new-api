@@ -102,6 +102,14 @@ const (
 	MsgUserLinuxDOIdEmpty            = "user.linux_do_id_empty"
 )
 
+// Email related messages
+const (
+	MsgEmailVerificationSubject = "email.verification.subject"
+	MsgEmailVerificationContent = "email.verification.content"
+	MsgPasswordResetSubject     = "email.password_reset.subject"
+	MsgPasswordResetContent     = "email.password_reset.content"
+)
+
 // Quota related messages
 const (
 	MsgQuotaNegative        = "quota.negative"

@@ -471,6 +471,4 @@ If this project is helpful to you, welcome to give us a ⭐️ Star！
 
 **[Official Documentation](https://docs.newapi.pro/en/docs)** • **[Issue Feedback](https://github.com/Calcium-Ion/new-api/issues)** • **[Latest Release](https://github.com/Calcium-Ion/new-api/releases)**
 
-<sub>Built with ❤️ by QuantumNous</sub>
-
 </div>

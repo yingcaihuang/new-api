@@ -1,0 +1,7 @@
+# Japanese translations (partial)
+
+# Email messages
+email.verification.subject: "{{.SystemName}} メール認証"
+email.verification.content: "<p>こんにちは、{{.SystemName}} のメール認証を実行しています。</p><p>認証コード: <strong>{{.Code}}</strong></p><p>このコードの有効期限は {{.Minutes}} 分です。心当たりがない場合はこのメールを無視してください。</p>"
+email.password_reset.subject: "{{.SystemName}} パスワード再設定"
+email.password_reset.content: "<p>こんにちは、{{.SystemName}} のパスワード再設定を実行しています。</p><p><a href='{{.Link}}'>こちら</a> をクリックしてパスワードを再設定してください。</p><p>リンクをクリックできない場合は、次の URL をブラウザに貼り付けて開いてください:<br> {{.Link}} </p><p>このリンクの有効期限は {{.Minutes}} 分です。心当たりがない場合はこのメールを無視してください。</p>"
