@@ -12,11 +12,9 @@
 #
 # ⚠️  IMPORTANT: Change all default passwords before deploying to production!
 
-version: '3.4' # For compatibility with older Docker versions
-
 services:
   new-api:
-    image: calciumion/new-api:latest
+    image: hub.metami.work:8080/new-api/new-api:latest
     container_name: new-api
     restart: always
     command: --log-dir /app/logs
