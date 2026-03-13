@@ -20,17 +20,14 @@ For commercial licensing, please contact support@quantumnous.com
 import React, { useEffect, useState } from 'react';
 import { API, showError } from '../../helpers';
 import { marked } from 'marked';
-import { Empty } from '@douyinfe/semi-ui';
-import {
-  IllustrationConstruction,
-  IllustrationConstructionDark,
-} from '@douyinfe/semi-illustrations';
 import { useTranslation } from 'react-i18next';
+import { useIsMobile } from '../../hooks/common/useIsMobile';
 
 const About = () => {
   const { t } = useTranslation();
   const [about, setAbout] = useState('');
   const [aboutLoaded, setAboutLoaded] = useState(false);
+  const isMobile = useIsMobile();
   const currentYear = new Date().getFullYear();
 
   const displayAbout = async () => {
@@ -55,101 +52,134 @@ const About = () => {
     displayAbout().then();
   }, []);
 
-  const emptyStyle = {
-    padding: '24px',
-  };
+  const features = [
+    {
+      title: '统一接口标准',
+      desc: '兼容主流 API 协议，提供统一的接口规范，简化开发流程。',
+    },
+    {
+      title: '高性能架构',
+      desc: '采用现代化技术栈，支持高并发访问，保障系统稳定运行。',
+    },
+    {
+      title: '灵活扩展',
+      desc: '模块化设计，支持自定义配置，轻松满足不同业务需求。',
+    },
+    {
+      title: '专业服务',
+      desc: '提供完善的技术支持，持续更新迭代，保障服务质量。',
+    },
+  ];
 
-  const customDescription = (
-    <div style={{ textAlign: 'center' }}>
-      <p>{t('可在设置页面设置关于内容，支持 HTML & Markdown')}</p>
-      {t('New API项目仓库地址：')}
-      <a
-        href='https://github.com/QuantumNous/new-api'
-        target='_blank'
-        rel='noopener noreferrer'
-        className='!text-semi-color-primary'
-      >
-        https://github.com/QuantumNous/new-api
-      </a>
-      <p>
-        <a
-          href='https://github.com/QuantumNous/new-api'
-          target='_blank'
-          rel='noopener noreferrer'
-          className='!text-semi-color-primary'
-        >
-          NewAPI
-        </a>{' '}
-        {t('© {{currentYear}}', { currentYear })}{' '}
-        <a
-          href='https://github.com/QuantumNous'
-          target='_blank'
-          rel='noopener noreferrer'
-          className='!text-semi-color-primary'
-        >
-          QuantumNous
-        </a>{' '}
-        {t('| 基于')}{' '}
-        <a
-          href='https://github.com/songquanpeng/one-api/releases/tag/v0.5.4'
-          target='_blank'
-          rel='noopener noreferrer'
-          className='!text-semi-color-primary'
-        >
-          One API v0.5.4
-        </a>{' '}
-        © 2023{' '}
-        <a
-          href='https://github.com/songquanpeng'
-          target='_blank'
-          rel='noopener noreferrer'
-          className='!text-semi-color-primary'
-        >
-          JustSong
-        </a>
-      </p>
-      <p>
-        {t('本项目根据')}
-        <a
-          href='https://github.com/songquanpeng/one-api/blob/v0.5.4/LICENSE'
-          target='_blank'
-          rel='noopener noreferrer'
-          className='!text-semi-color-primary'
-        >
-          {t('MIT许可证')}
-        </a>
-        {t('授权，需在遵守')}
-        <a
-          href='https://www.gnu.org/licenses/agpl-3.0.html'
-          target='_blank'
-          rel='noopener noreferrer'
-          className='!text-semi-color-primary'
-        >
-          {t('AGPL v3.0协议')}
-        </a>
-        {t('的前提下使用。')}
-      </p>
-    </div>
-  );
+  const advantages = [
+    {
+      title: '稳定可靠',
+      desc: '7×24小时稳定运行，完善的监控和告警机制。',
+    },
+    {
+      title: '安全保障',
+      desc: '多重安全防护措施，保护数据安全和隐私。',
+    },
+    {
+      title: '快速响应',
+      desc: '专业技术团队支持，快速响应和解决问题。',
+    },
+    {
+      title: '持续优化',
+      desc: '根据用户反馈持续改进，不断提升用户体验。',
+    },
+  ];
 
   return (
-    <div className='mt-[60px] px-2'>
+    <div className='w-full overflow-x-hidden'>
       {aboutLoaded && about === '' ? (
-        <div className='flex justify-center items-center h-screen p-8'>
-          <Empty
-            image={
-              <IllustrationConstruction style={{ width: 150, height: 150 }} />
-            }
-            darkModeImage={
-              <IllustrationConstructionDark
-                style={{ width: 150, height: 150 }}
-              />
-            }
-            description={t('管理员暂时未设置任何关于内容')}
-            style={emptyStyle}
-          >
-            {customDescription}
-          </Empty>
+        <div className='w-full overflow-x-hidden pb-16 md:pb-24'>
+          <div className='blur-ball blur-ball-indigo' />
+          <div className='blur-ball blur-ball-teal' />
+          <div className='absolute inset-0 bg-[radial-gradient(circle_at_18%_15%,rgba(45,212,191,0.20),transparent_38%),radial-gradient(circle_at_82%_8%,rgba(56,189,248,0.16),transparent_34%),linear-gradient(to_bottom,rgba(240,249,255,0.6),transparent_55%)] pointer-events-none dark:bg-none' />
+
+          <div className='mt-8 px-4 md:px-8 lg:px-10'>
+            <div className='max-w-6xl mx-auto'>
+              <div className='rounded-[28px] border border-semi-color-border bg-semi-color-bg-0/90 backdrop-blur-md shadow-[0_20px_70px_rgba(2,132,199,0.08)] p-6 md:p-10 lg:p-12 text-center'>
+                <h1 className='text-3xl md:text-5xl font-bold text-semi-color-text-0 leading-tight'>
+                  关于我们
+                </h1>
+                <p className='mt-4 text-base md:text-lg text-semi-color-text-1 max-w-3xl mx-auto leading-relaxed'>
+                  我们致力于打造一个强大、易用的开源平台，为开发者提供优质的服务和工具，
+                  帮助企业和个人开发者更高效地构建应用。
+                </p>
+              </div>
+
+              <div className='mt-8 rounded-3xl border border-semi-color-border bg-semi-color-bg-0 p-6 md:p-10'>
+                <h2 className='text-2xl md:text-3xl font-bold text-semi-color-text-0'>
+                  核心特性
+                </h2>
+                <div className='mt-6 grid grid-cols-1 md:grid-cols-2 gap-4'>
+                  {features.map((item) => (
+                    <div
+                      key={item.title}
+                      className='rounded-2xl border border-semi-color-border bg-semi-color-bg-1 p-5 text-left'
+                    >
+                      <p className='text-base md:text-lg font-semibold text-semi-color-text-0'>
+                        🔹 {item.title}
+                      </p>
+                      <p className='mt-2 text-sm md:text-base text-semi-color-text-1 leading-7'>
+                        {item.desc}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className='mt-8 rounded-3xl border border-semi-color-border bg-gradient-to-br from-semi-color-bg-0 to-semi-color-bg-1 p-6 md:p-10'>
+                <h2 className='text-2xl md:text-3xl font-bold text-semi-color-text-0'>
+                  服务优势
+                </h2>
+                <div className='mt-6 grid grid-cols-1 md:grid-cols-2 gap-4'>
+                  {advantages.map((item) => (
+                    <div
+                      key={item.title}
+                      className='rounded-2xl border border-semi-color-border bg-semi-color-bg-0 p-5 text-left'
+                    >
+                      <p className='text-base md:text-lg font-semibold text-semi-color-text-0'>
+                        ✨ {item.title}
+                      </p>
+                      <p className='mt-2 text-sm md:text-base text-semi-color-text-1 leading-7'>
+                        {item.desc}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className='mt-8 rounded-3xl border border-semi-color-border bg-semi-color-bg-0 p-6 md:p-10'>
+                <h2 className='text-2xl md:text-3xl font-bold text-semi-color-text-0 text-center'>
+                  平台介绍
+                </h2>
+                <div className='mt-5 space-y-4'>
+                  <div className='rounded-xl border border-semi-color-border bg-semi-color-bg-1 p-5'>
+                    <p className='text-sm md:text-base text-semi-color-text-1 leading-relaxed text-center'>
+                      我们专注于为企业和开发者提供高效、稳定的 API 服务解决方案。
+                      通过先进的技术架构和完善的服务体系，助力用户快速构建和部署应用。
+                    </p>
+                  </div>
+
+                  <div className='rounded-xl border border-semi-color-border bg-semi-color-bg-1 p-5'>
+                    <p className='text-sm md:text-base text-semi-color-text-1 leading-relaxed text-center'>
+                      平台经过长期的技术积累和优化，已服务众多企业客户，
+                      在性能、安全性和稳定性方面得到了充分验证。
+                    </p>
+                  </div>
+
+                  {/* <div className='rounded-xl border border-semi-color-border bg-semi-color-bg-1 p-5 text-center'>
+                    <p className='text-sm md:text-base text-semi-color-text-2'>
+                      © {currentYear} 版权所有
+                    </p>
+                  </div> */}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       ) : (
         <>
@@ -160,6 +190,7 @@ const About = () => {
             />
           ) : (
             <div
+              className='mt-[60px] px-4 md:px-8 lg:px-10'
               style={{ fontSize: 'larger' }}
               dangerouslySetInnerHTML={{ __html: about }}
             ></div>

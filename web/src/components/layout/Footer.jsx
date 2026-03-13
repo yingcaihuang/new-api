@@ -63,7 +63,7 @@ const FooterBar = () => {
                 </p>
                 <div className='flex flex-col gap-4'>
                   <a
-                    href='https://docs.newapi.pro/wiki/project-introduction/'
+                    href='https://docs.rocketapi.pro/wiki/project-introduction/'
                     target='_blank'
                     rel='noopener noreferrer'
                     className='!text-semi-color-text-1'
@@ -71,7 +71,7 @@ const FooterBar = () => {
                     {t('关于项目')}
                   </a>
                   <a
-                    href='https://docs.newapi.pro/support/community-interaction/'
+                    href='https://docs.rocketapi.pro/support/community-interaction/'
                     target='_blank'
                     rel='noopener noreferrer'
                     className='!text-semi-color-text-1'
@@ -79,7 +79,7 @@ const FooterBar = () => {
                     {t('联系我们')}
                   </a>
                   <a
-                    href='https://docs.newapi.pro/wiki/features-introduction/'
+                    href='https://docs.rocketapi.pro/wiki/features-introduction/'
                     target='_blank'
                     rel='noopener noreferrer'
                     className='!text-semi-color-text-1'
@@ -95,7 +95,7 @@ const FooterBar = () => {
                 </p>
                 <div className='flex flex-col gap-4'>
                   <a
-                    href='https://docs.newapi.pro/getting-started/'
+                    href='https://docs.rocketapi.pro/getting-started/'
                     target='_blank'
                     rel='noopener noreferrer'
                     className='!text-semi-color-text-1'
@@ -103,7 +103,7 @@ const FooterBar = () => {
                     {t('快速开始')}
                   </a>
                   <a
-                    href='https://docs.newapi.pro/installation/'
+                    href='https://docs.rocketapi.pro/installation/'
                     target='_blank'
                     rel='noopener noreferrer'
                     className='!text-semi-color-text-1'
@@ -111,7 +111,7 @@ const FooterBar = () => {
                     {t('安装指南')}
                   </a>
                   <a
-                    href='https://docs.newapi.pro/api/'
+                    href='https://docs.rocketapi.pro/api/'
                     target='_blank'
                     rel='noopener noreferrer'
                     className='!text-semi-color-text-1'
@@ -153,37 +153,6 @@ const FooterBar = () => {
                 </div>
               </div>
 
-              <div className='text-left'>
-                <p className='!text-semi-color-text-0 font-semibold mb-5'>
-                  {t('友情链接')}
-                </p>
-                <div className='flex flex-col gap-4'>
-                  <a
-                    href='https://github.com/Calcium-Ion/new-api-horizon'
-                    target='_blank'
-                    rel='noopener noreferrer'
-                    className='!text-semi-color-text-1'
-                  >
-                    new-api-horizon
-                  </a>
-                  <a
-                    href='https://github.com/coaidev/coai'
-                    target='_blank'
-                    rel='noopener noreferrer'
-                    className='!text-semi-color-text-1'
-                  >
-                    CoAI
-                  </a>
-                  <a
-                    href='https://www.gpt-load.com/'
-                    target='_blank'
-                    rel='noopener noreferrer'
-                    className='!text-semi-color-text-1'
-                  >
-                    GPT-Load
-                  </a>
-                </div>
-              </div>
             </div>
           </div>
         )}

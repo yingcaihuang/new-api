@@ -244,7 +244,7 @@ const Home = () => {
                   </p>
 
                   <div className='mt-7 flex flex-row gap-3 md:gap-4 justify-center items-center'>
-                    <Link to='/'>
+                    <Link to='/register'>
                       <Button
                         theme='solid'
                         type='primary'
@@ -255,14 +255,15 @@ const Home = () => {
                         立即接入
                       </Button>
                     </Link>
-                    <Button
-                      size={isMobile ? 'default' : 'large'}
-                      className='flex items-center !rounded-3xl px-6 py-2 border border-semi-color-border bg-semi-color-bg-1'
-                      icon={<IconFile />}
-                      onClick={() => window.open('/', '_blank')}
-                    >
-                      查看文档
-                    </Button>
+                    <Link to='/document'>
+                      <Button
+                        size={isMobile ? 'default' : 'large'}
+                        className='flex items-center !rounded-3xl px-6 py-2 border border-semi-color-border bg-semi-color-bg-1'
+                        icon={<IconFile />}
+                      >
+                        查看文档
+                      </Button>
+                    </Link>
                   </div>
                 </div>
 
@@ -393,7 +394,7 @@ const Home = () => {
                     现在开始，仅需 1 分钟完成接入。
                   </p>
                   <div className='mt-6 flex flex-row gap-3 md:gap-4 justify-center items-center'>
-                    <Link to='/'>
+                    <Link to='/register'>
                       <Button
                         theme='solid'
                         type='primary'
@@ -403,14 +404,15 @@ const Home = () => {
                         免费开始
                       </Button>
                     </Link>
-                    <Button
-                      size={isMobile ? 'default' : 'large'}
-                      className='flex items-center !rounded-3xl px-6 py-2 border border-semi-color-border bg-semi-color-bg-0'
-                      icon={<IconFile />}
-                      onClick={() => window.open('/', '_blank')}
-                    >
-                      查看部署指南
-                    </Button>
+                    <Link to='/document'>
+                      <Button
+                        size={isMobile ? 'default' : 'large'}
+                        className='flex items-center !rounded-3xl px-6 py-2 border border-semi-color-border bg-semi-color-bg-0'
+                        icon={<IconFile />}
+                      >
+                        查看文档
+                      </Button>
+                    </Link>
                   </div>
                 </div>
 
