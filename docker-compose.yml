@@ -14,7 +14,7 @@
 
 services:
   new-api:
-    image: hub.metami.work:8080/new-api/new-api:latest
+    image: hub.metami.work/new-api/new-api:latest
     container_name: new-api
     restart: always
     command: --log-dir /app/logs

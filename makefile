@@ -12,3 +12,10 @@ build-frontend:
 start-backend:
 	@echo "Starting backend dev server..."
 	@cd $(BACKEND_DIR) && go run main.go &
+
+deploy: build-frontend
+	@echo "Building Docker image..."
+	@docker build -f Dockerfile.prebuilt -t hub.metami.work/new-api/new-api:latest .
+	@echo "Pushing Docker image to registry..."
+	@docker push hub.metami.work/new-api/new-api:latest
+	@echo "Deploy completed successfully!"
