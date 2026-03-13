@@ -68,6 +68,7 @@ const Home = () => {
   const isDemoSiteMode = statusState?.status?.demo_site_enabled || false;
   const serverAddress =
     statusState?.status?.server_address || `${window.location.origin}`;
+  const pythonBaseURLSnippet = `base_url = "${serverAddress}"`;
   const endpointItems = API_ENDPOINTS.map((e) => ({ value: e }));
   const [endpointIndex, setEndpointIndex] = useState(0);
   const coreValues = [
@@ -360,7 +361,7 @@ const Home = () => {
                   </p>
                   <div className='mt-3 rounded-2xl border border-semi-color-border bg-[#0b1220] px-5 py-4 text-left'>
                     <code className='text-sm md:text-base text-[#93c5fd]'>
-                      base_url = "http://localhost:3000"
+                      {pythonBaseURLSnippet}
                     </code>
                   </div>
                   <p className='mt-4 text-sm md:text-base text-semi-color-text-1'>
