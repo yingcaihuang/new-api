@@ -98,7 +98,7 @@
     "CPU 使用率超过此值时拒绝请求": "Reject requests when CPU usage exceeds this value",
     "CPU 阈值 (%)": "CPU Threshold (%)",
     "Creem API 密钥，敏感信息不显示": "Creem API key, sensitive information not displayed",
-    "Creem Setting Tips": "Creem only supports preset fixed-amount products. These products and their prices need to be created and configured in advance on the Creem website, so custom dynamic amount top-ups are not supported. Configure the product name and price on Creem, obtain the Product Id, and then fill it in for the product below. Set the top-up amount and display price for this product in the new API.",
+    "Creem Setting Tips": "Creem only supports preset fixed-amount products. These products and their prices need to be created and configured in advance on the Creem website, so custom dynamic amount top-ups are not supported. Configure the product name and price on Creem, obtain the Product Id, and then fill it in for the product below. Set the top-up amount and display price for this product in the rocket API.",
     "Creem 介绍": "Creem is the payment partner you always deserved, we strive for simplicity and straightforwardness on our APIs.",
     "Creem 充值": "Creem Recharge",
     "Creem 设置": "Creem Setting",

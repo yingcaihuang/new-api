@@ -48,7 +48,7 @@ export function isRoot() {
 
 export function getSystemName() {
   let system_name = localStorage.getItem('system_name');
-  if (!system_name) return 'Rocket API';
+  if (!system_name) return 'Rocket AI';
   return system_name;
 }
 
