@@ -171,6 +171,10 @@ func SetApiRouter(router *gin.Engine) {
 		apiRouter.POST("/subscription/epay/return", controller.SubscriptionEpayReturn)
 		apiRouter.POST("/subscription/alipay/notify", controller.SubscriptionAlipayNotify)
 		apiRouter.GET("/subscription/alipay/notify", controller.SubscriptionAlipayNotify)
+
+		// Public subscription routes (no auth required)
+		apiRouter.GET("/subscription/public/plans", controller.GetSubscriptionPlans)
+
 		optionRoute := apiRouter.Group("/option")
 		optionRoute.Use(middleware.RootAuth())
 		{

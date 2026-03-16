@@ -95,6 +95,7 @@ const RechargeCard = ({
   activeSubscriptions = [],
   allSubscriptions = [],
   reloadSubscriptionSelf,
+  initialPlanId = null,
 }) => {
   const onlineFormApiRef = useRef(null);
   const redeemFormApiRef = useRef(null);
@@ -634,6 +635,7 @@ const RechargeCard = ({
                 allSubscriptions={allSubscriptions}
                 reloadSubscriptionSelf={reloadSubscriptionSelf}
                 withCard={false}
+                initialPlanId={initialPlanId}
               />
             </div>
           </TabPane>

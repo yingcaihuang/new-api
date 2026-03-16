@@ -30,6 +30,7 @@ import {
 } from '../../helpers';
 import { Modal, Toast } from '@douyinfe/semi-ui';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
 import { UserContext } from '../../context/User';
 import { StatusContext } from '../../context/Status';
 
@@ -42,8 +43,10 @@ import AlipayQRCodeModal from './modals/AlipayQRCodeModal';
 
 const TopUp = () => {
   const { t } = useTranslation();
+  const [searchParams] = useSearchParams();
   const [userState, userDispatch] = useContext(UserContext);
   const [statusState] = useContext(StatusContext);
+  const [initialPlanId, setInitialPlanId] = useState(null);
 
   const [redemptionCode, setRedemptionCode] = useState('');
   const [amount, setAmount] = useState(0.0);
@@ -619,6 +622,16 @@ const TopUp = () => {
     getSubscriptionSelf().then();
   }, []);
 
+  // 检查 URL 参数以自动打开套餐购买弹窗
+  useEffect(() => {
+    const openSubscriptionId = searchParams.get('openSubscription');
+    if (openSubscriptionId) {
+      setInitialPlanId(parseInt(openSubscriptionId));
+      // 清除URL参数，避免重复触发
+      window.history.replaceState({}, '', '/console/topup');
+    }
+  }, [searchParams]);
+
   useEffect(() => {
     if (statusState?.status) {
       // const minTopUpValue = statusState.status.min_topup || 1;
@@ -861,6 +874,7 @@ const TopUp = () => {
           activeSubscriptions={activeSubscriptions}
           allSubscriptions={allSubscriptions}
           reloadSubscriptionSelf={getSubscriptionSelf}
+          initialPlanId={initialPlanId}
         />
         <InvitationCard
           t={t}

@@ -48,7 +48,7 @@ const Document = () => {
     "messages": [
       {
         "role": "user",
-        "content": "你好"
+        "content": "${t('你好')}"
       }
     ]
   }'`;
@@ -63,7 +63,7 @@ client = OpenAI(
 response = client.chat.completions.create(
     model="gpt-4o-mini",
     messages=[
-        {"role": "user", "content": "你好"}
+        {"role": "user", "content": "${t('你好')}"}
     ]
 )
 
@@ -80,7 +80,7 @@ async function main() {
   const response = await client.chat.completions.create({
     model: 'gpt-4o-mini',
     messages: [
-      { role: 'user', content: '你好' }
+      { role: 'user', content: '${t('你好')}' }
     ]
   });
 
@@ -91,20 +91,20 @@ main();`;
 
   const steps = [
     {
-      title: '注册账号',
-      desc: '访问平台并注册一个新账号，完成邮箱验证。',
+      title: t('注册账号'),
+      desc: t('访问平台并注册一个新账号，完成邮箱验证。'),
     },
     {
-      title: '登录控制台',
-      desc: '使用注册的账号登录到控制台管理页面。',
+      title: t('登录控制台'),
+      desc: t('使用注册的账号登录到控制台管理页面。'),
     },
     {
-      title: '生成 API Key',
-      desc: '在控制台的"令牌"页面，点击"新建令牌"按钮生成您的 API Key。',
+      title: t('生成 API Key'),
+      desc: t('在控制台的令牌页面生成API Key'),
     },
     {
-      title: '开始调用',
-      desc: '使用生成的 API Key 调用接口，开始使用 AI 模型服务。',
+      title: t('开始调用'),
+      desc: t('使用生成的 API Key 调用接口，开始使用 AI 模型服务。'),
     },
   ];
 
@@ -119,16 +119,16 @@ main();`;
           <div className='max-w-6xl mx-auto'>
             <div className='rounded-[28px] border border-semi-color-border bg-semi-color-bg-0/90 backdrop-blur-md shadow-[0_20px_70px_rgba(2,132,199,0.08)] p-6 md:p-10 lg:p-12 text-center'>
               <h1 className='text-3xl md:text-5xl font-bold text-semi-color-text-0 leading-tight'>
-                快速开始
+                {t('快速开始')}
               </h1>
               <p className='mt-4 text-base md:text-lg text-semi-color-text-1 max-w-3xl mx-auto leading-relaxed'>
-                按照以下步骤，快速接入平台并开始使用 AI 模型服务
+                {t('按照以下步骤，快速接入平台并开始使用 AI 模型服务')}
               </p>
             </div>
 
             <div className='mt-8 rounded-3xl border border-semi-color-border bg-semi-color-bg-0 p-6 md:p-10'>
               <h2 className='text-2xl md:text-3xl font-bold text-semi-color-text-0'>
-                接入步骤
+                {t('接入步骤')}
               </h2>
               <div className='mt-6 space-y-4'>
                 {steps.map((item, index) => (
@@ -158,7 +158,7 @@ main();`;
                     size={isMobile ? 'default' : 'large'}
                     className='!rounded-3xl px-8 py-2'
                   >
-                    前往控制台生成 API Key
+                    {t('前往控制台生成 API Key')}
                   </Button>
                 </Link>
               </div>
@@ -166,10 +166,10 @@ main();`;
 
             <div className='mt-8 rounded-3xl border border-semi-color-border bg-gradient-to-br from-semi-color-bg-0 to-semi-color-bg-1 p-6 md:p-10'>
               <h2 className='text-2xl md:text-3xl font-bold text-semi-color-text-0'>
-                cURL 示例
+                {t('cURL 示例')}
               </h2>
               <p className='mt-3 text-sm md:text-base text-semi-color-text-1'>
-                使用 cURL 命令快速测试 API 接口：
+                {t('使用 cURL 命令快速测试 API 接口：')}
               </p>
               <div className='mt-5 rounded-2xl border border-semi-color-border bg-[#0b1220] p-5 text-left relative'>
                 <Button
@@ -184,17 +184,17 @@ main();`;
               </div>
               <div className='mt-4 rounded-xl border border-semi-color-border bg-semi-color-bg-0 p-4'>
                 <p className='text-sm text-semi-color-text-1'>
-                  💡 请将 <code className='px-2 py-1 rounded bg-semi-color-fill-0 text-semi-color-text-0'>YOUR_API_KEY</code> 替换为您在控制台生成的实际 API Key
+                  💡 {t('请将')} <code className='px-2 py-1 rounded bg-semi-color-fill-0 text-semi-color-text-0'>YOUR_API_KEY</code> {t('替换为您在控制台生成的实际 API Key')}
                 </p>
               </div>
             </div>
 
             <div className='mt-8 rounded-3xl border border-semi-color-border bg-semi-color-bg-0 p-6 md:p-10'>
               <h2 className='text-2xl md:text-3xl font-bold text-semi-color-text-0'>
-                Python 示例
+                {t('Python 示例')}
               </h2>
               <p className='mt-3 text-sm md:text-base text-semi-color-text-1'>
-                使用 OpenAI Python SDK 调用接口：
+                {t('使用 OpenAI Python SDK 调用接口：')}
               </p>
               <div className='mt-5 rounded-2xl border border-semi-color-border bg-[#0b1220] p-5 text-left relative'>
                 <Button
@@ -209,17 +209,17 @@ main();`;
               </div>
               <div className='mt-4 rounded-xl border border-semi-color-border bg-semi-color-bg-1 p-4'>
                 <p className='text-sm text-semi-color-text-1'>
-                  📦 安装依赖：<code className='px-2 py-1 rounded bg-semi-color-fill-0 text-semi-color-text-0'>pip install openai</code>
+                  📦 {t('安装依赖：')}<code className='px-2 py-1 rounded bg-semi-color-fill-0 text-semi-color-text-0'>pip install openai</code>
                 </p>
               </div>
             </div>
 
             <div className='mt-8 rounded-3xl border border-semi-color-border bg-gradient-to-br from-semi-color-bg-0 to-semi-color-bg-1 p-6 md:p-10'>
               <h2 className='text-2xl md:text-3xl font-bold text-semi-color-text-0'>
-                Node.js 示例
+                {t('Node.js 示例')}
               </h2>
               <p className='mt-3 text-sm md:text-base text-semi-color-text-1'>
-                使用 OpenAI Node.js SDK 调用接口：
+                {t('使用 OpenAI Node.js SDK 调用接口：')}
               </p>
               <div className='mt-5 rounded-2xl border border-semi-color-border bg-[#0b1220] p-5 text-left relative'>
                 <Button
@@ -234,17 +234,17 @@ main();`;
               </div>
               <div className='mt-4 rounded-xl border border-semi-color-border bg-semi-color-bg-0 p-4'>
                 <p className='text-sm text-semi-color-text-1'>
-                  📦 安装依赖：<code className='px-2 py-1 rounded bg-semi-color-fill-0 text-semi-color-text-0'>npm install openai</code>
+                  📦 {t('安装依赖：')}<code className='px-2 py-1 rounded bg-semi-color-fill-0 text-semi-color-text-0'>npm install openai</code>
                 </p>
               </div>
             </div>
 
             <div className='mt-8 rounded-3xl border border-semi-color-border bg-gradient-to-r from-cyan-100/70 via-sky-100/60 to-emerald-100/60 dark:from-semi-color-bg-0 dark:via-semi-color-bg-0 dark:to-semi-color-bg-0 p-7 md:p-10 text-center'>
               <h2 className='text-2xl md:text-3xl font-bold text-semi-color-text-0'>
-                准备好开始了吗？
+                {t('准备好开始了吗？')}
               </h2>
               <p className='mt-3 text-sm md:text-base text-semi-color-text-1'>
-                立即注册账号，免费获取 API Key 开始使用
+                {t('立即注册账号，免费获取 API Key 开始使用')}
               </p>
               <div className='mt-6 flex flex-row gap-3 md:gap-4 justify-center items-center'>
                 <Link to='/register'>
@@ -254,7 +254,7 @@ main();`;
                     size={isMobile ? 'default' : 'large'}
                     className='!rounded-3xl px-8 py-2 shadow-sm'
                   >
-                    立即注册
+                    {t('立即注册')}
                   </Button>
                 </Link>
                 <Link to='/console/token'>
@@ -262,7 +262,7 @@ main();`;
                     size={isMobile ? 'default' : 'large'}
                     className='flex items-center !rounded-3xl px-6 py-2 border border-semi-color-border bg-semi-color-bg-0'
                   >
-                    前往控制台
+                    {t('前往控制台')}
                   </Button>
                 </Link>
               </div>

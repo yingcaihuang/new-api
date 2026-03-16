@@ -73,41 +73,41 @@ const Home = () => {
   const [endpointIndex, setEndpointIndex] = useState(0);
   const coreValues = [
     {
-      title: '统一接口标准',
-      desc: '兼容 OpenAI API 协议，无需改动现有业务代码。',
+      title: t('统一接口标准'),
+      desc: t('兼容 OpenAI API 协议，无需改动现有业务代码。'),
     },
     {
-      title: '多供应商聚合',
-      desc: '支持接入多家主流大模型服务商，灵活选择最优模型。',
+      title: t('多供应商聚合'),
+      desc: t('支持接入多家主流大模型服务商，灵活选择最优模型。'),
     },
     {
-      title: '自动故障切换',
-      desc: '智能调度与故障转移，保障业务持续稳定运行。',
+      title: t('自动故障切换'),
+      desc: t('智能调度与故障转移，保障业务持续稳定运行。'),
     },
     {
-      title: '成本优化',
-      desc: '多 Key 管理与动态调度，帮助企业降低模型调用成本。',
+      title: t('成本优化'),
+      desc: t('多 Key 管理与动态调度，帮助企业降低模型调用成本。'),
     },
   ];
   const productionFeatures = [
-    '多模型统一管理',
-    '负载均衡与高可用架构',
-    '细粒度 API Key 管控',
-    '调用数据统计与监控',
-    '支持私有化部署',
-    '兼容现有 SDK 生态',
+    t('多模型统一管理'),
+    t('负载均衡与高可用架构'),
+    t('细粒度 API Key 管控'),
+    t('调用数据统计与监控'),
+    t('支持私有化部署'),
+    t('兼容现有 SDK 生态'),
   ];
   const techStacks = [
     'OpenAI SDK',
     'LangChain',
     'LlamaIndex',
-    '各类 AI 应用框架',
+    t('各类 AI 应用框架'),
   ];
   const riskPoints = [
-    '不再被单一厂商绑定',
-    '避免价格波动风险',
-    '避免服务中断风险',
-    '避免 API 变更风险',
+    t('不再被单一厂商绑定'),
+    t('避免价格波动风险'),
+    t('避免服务中断风险'),
+    t('避免 API 变更风险'),
   ];
 
   const displayHomePageContent = async () => {
@@ -134,7 +134,7 @@ const Home = () => {
       }
     } else {
       showError(message);
-      setHomePageContent('加载首页内容失败...');
+      setHomePageContent(t('加载首页内容失败...'));
     }
     setHomePageContentLoaded(true);
   };
@@ -158,7 +158,7 @@ const Home = () => {
             setNoticeVisible(true);
           }
         } catch (error) {
-          console.error('获取公告失败:', error);
+          console.error(t('获取公告失败:'), error);
         }
       }
     };
@@ -195,17 +195,17 @@ const Home = () => {
               <div className='max-w-6xl mx-auto'>
                 <div className='rounded-[28px] border border-semi-color-border bg-semi-color-bg-0/90 backdrop-blur-md shadow-[0_20px_70px_rgba(2,132,199,0.08)] p-6 md:p-10 lg:p-12 text-center'>
                   <h1 className='text-3xl md:text-5xl lg:text-6xl font-bold text-semi-color-text-0 leading-tight'>
-                    统一大模型接口网关
+                    {t('统一大模型接口网关')}
                   </h1>
                   <p className='mt-4 text-lg md:text-2xl text-semi-color-text-1 font-medium'>
-                    一次接入，全面掌控所有模型
+                    {t('一次接入，全面掌控所有模型')}
                   </p>
                   <p className='mt-3 text-base md:text-lg text-semi-color-text-2'>
-                    更低成本 · 更高稳定性 · 更自由切换
+                    {t('更低成本 · 更高稳定性 · 更自由切换')}
                   </p>
 
                   <p className='mt-8 text-sm md:text-base text-semi-color-text-1'>
-                    只需将模型 Base URL 替换为：
+                    {t('只需将模型 Base URL 替换为：')}
                   </p>
 
                   <div className='mt-4 max-w-2xl mx-auto rounded-2xl border border-semi-color-border bg-semi-color-bg-1/80 p-3 md:p-4'>
@@ -240,7 +240,7 @@ const Home = () => {
                   </div>
 
                   <p className='mt-4 text-sm md:text-base text-semi-color-text-1'>
-                    即可接入多家主流大模型供应商。
+                    {t('即可接入多家主流大模型供应商。')}
                   </p>
 
                   <div className='mt-7 flex flex-row gap-3 md:gap-4 justify-center items-center'>
@@ -252,7 +252,7 @@ const Home = () => {
                         className='!rounded-3xl px-8 py-2 shadow-sm'
                         icon={<IconPlay />}
                       >
-                        立即接入
+                        {t('立即接入')}
                       </Button>
                     </Link>
                     <Link to='/document'>
@@ -261,7 +261,7 @@ const Home = () => {
                         className='flex items-center !rounded-3xl px-6 py-2 border border-semi-color-border bg-semi-color-bg-1'
                         icon={<IconFile />}
                       >
-                        查看文档
+                        {t('查看文档')}
                       </Button>
                     </Link>
                   </div>
@@ -305,7 +305,7 @@ const Home = () => {
 
                 <div className='mt-10 rounded-3xl border border-semi-color-border bg-semi-color-bg-0 p-6 md:p-10'>
                   <h2 className='text-2xl md:text-3xl font-bold text-semi-color-text-0'>
-                    为什么选择我们的网关？
+                    {t('为什么选择我们的网关？')}
                   </h2>
                   <div className='mt-6 grid grid-cols-1 md:grid-cols-2 gap-4'>
                     {coreValues.map((item) => (
@@ -326,7 +326,7 @@ const Home = () => {
 
                 <div className='mt-8 rounded-3xl border border-semi-color-border bg-gradient-to-br from-semi-color-bg-0 to-semi-color-bg-1 p-6 md:p-10'>
                   <h2 className='text-2xl md:text-3xl font-bold text-semi-color-text-0'>
-                    为生产环境而设计
+                    {t('为生产环境而设计')}
                   </h2>
                   <div className='mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3'>
                     {productionFeatures.map((item) => (
@@ -342,10 +342,10 @@ const Home = () => {
 
                 <div className='mt-8 rounded-3xl border border-semi-color-border bg-semi-color-bg-0 p-6 md:p-10'>
                   <h2 className='text-2xl md:text-3xl font-bold text-semi-color-text-0'>
-                    开发者零迁移成本
+                    {t('开发者零迁移成本')}
                   </h2>
                   <p className='mt-4 text-sm md:text-base text-semi-color-text-1'>
-                    如果你正在使用：
+                    {t('如果你正在使用：')}
                   </p>
                   <div className='mt-4 flex flex-wrap gap-2'>
                     {techStacks.map((item) => (
@@ -358,7 +358,7 @@ const Home = () => {
                     ))}
                   </div>
                   <p className='mt-5 text-sm md:text-base text-semi-color-text-1'>
-                    只需修改：
+                    {t('只需修改：')}
                   </p>
                   <div className='mt-3 rounded-2xl border border-semi-color-border bg-[#0b1220] px-5 py-4 text-left'>
                     <code className='text-sm md:text-base text-[#93c5fd]'>
@@ -366,13 +366,13 @@ const Home = () => {
                     </code>
                   </div>
                   <p className='mt-4 text-sm md:text-base text-semi-color-text-1'>
-                    无需重构代码，即可实现多模型调度能力。
+                    {t('无需重构代码，即可实现多模型调度能力。')}
                   </p>
                 </div>
 
                 <div className='mt-8 rounded-3xl border border-semi-color-border bg-semi-color-bg-0 p-6 md:p-10'>
                   <h2 className='text-2xl md:text-3xl font-bold text-semi-color-text-0'>
-                    统一网关，让模型选择权回到你手中。
+                    {t('统一网关，让模型选择权回到你手中。')}
                   </h2>
                   <div className='mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3'>
                     {riskPoints.map((item) => (
@@ -388,10 +388,10 @@ const Home = () => {
 
                 <div className='mt-8 rounded-3xl border border-semi-color-border bg-gradient-to-r from-cyan-100/70 via-sky-100/60 to-emerald-100/60 dark:from-semi-color-bg-0 dark:via-semi-color-bg-0 dark:to-semi-color-bg-0 p-7 md:p-10 text-center'>
                   <h2 className='text-2xl md:text-3xl font-bold text-semi-color-text-0'>
-                    准备好统一你的模型入口了吗？
+                    {t('准备好统一你的模型入口了吗？')}
                   </h2>
                   <p className='mt-3 text-sm md:text-base text-semi-color-text-1'>
-                    现在开始，仅需 1 分钟完成接入。
+                    {t('现在开始，仅需 1 分钟完成接入。')}
                   </p>
                   <div className='mt-6 flex flex-row gap-3 md:gap-4 justify-center items-center'>
                     <Link to='/register'>
@@ -401,7 +401,7 @@ const Home = () => {
                         size={isMobile ? 'default' : 'large'}
                         className='!rounded-3xl px-8 py-2 shadow-sm'
                       >
-                        免费开始
+                        {t('免费开始')}
                       </Button>
                     </Link>
                     <Link to='/document'>
@@ -410,7 +410,7 @@ const Home = () => {
                         className='flex items-center !rounded-3xl px-6 py-2 border border-semi-color-border bg-semi-color-bg-0'
                         icon={<IconFile />}
                       >
-                        查看文档
+                        {t('查看文档')}
                       </Button>
                     </Link>
                   </div>
@@ -418,7 +418,7 @@ const Home = () => {
 
                 <div className='mt-10 w-full'>
                   <p className='text-center text-sm md:text-base text-semi-color-text-2 mb-4'>
-                    支持众多的大模型供应商
+                    {t('支持众多的大模型供应商')}
                   </p>
                   <div className='flex flex-wrap items-center justify-center gap-3'>
                     <Suno size={28} />

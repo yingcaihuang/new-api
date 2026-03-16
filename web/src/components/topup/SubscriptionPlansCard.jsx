@@ -17,7 +17,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 For commercial licensing, please contact support@quantumnous.com
 */
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import {
   Badge,
   Button,
@@ -85,6 +85,10 @@ const SubscriptionPlansCard = ({
   allSubscriptions = [],
   reloadSubscriptionSelf,
   withCard = true,
+  hideMySubscription = false,
+  onSubscribeNow = null,
+  initialPlanId = null,
+  compact = false,
 }) => {
   const [open, setOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
@@ -97,6 +101,17 @@ const SubscriptionPlansCard = ({
   const [alipayAmount, setAlipayAmount] = useState(0);
 
   const epayMethods = useMemo(() => getEpayMethods(payMethods), [payMethods]);
+
+  // 当 initialPlanId 变化时，自动打开购买弹窗
+  useEffect(() => {
+    if (initialPlanId && plans.length > 0) {
+      const plan = plans.find((p) => p?.plan?.id === initialPlanId);
+      if (plan && !onSubscribeNow) {
+        // 只有在没有自定义订阅回调时才打开弹窗
+        openBuy(plan);
+      }
+    }
+  }, [initialPlanId, plans]);
 
   const openBuy = (p) => {
     setSelectedPlan(p);
@@ -339,6 +354,7 @@ const SubscriptionPlansCard = ({
       ) : (
         <Space vertical style={{ width: '100%' }} spacing={8}>
           {/* 当前订阅状态 */}
+          {!hideMySubscription && (
           <Card className='!rounded-xl w-full' bodyStyle={{ padding: '12px' }}>
             <div className='flex items-center justify-between mb-2 gap-3'>
               <div className='flex items-center gap-2 flex-1 min-w-0'>
@@ -512,10 +528,13 @@ const SubscriptionPlansCard = ({
               </div>
             )}
           </Card>
+          )}
 
           {/* 可购买套餐 - 标准定价卡片 */}
           {plans.length > 0 ? (
-            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-5 w-full px-1'>
+            <div className={compact
+              ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 w-full px-1'
+              : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-5 w-full px-1'}>
               {plans.map((p, index) => {
                 const plan = p?.plan;
                 const totalAmount = Number(plan?.total_amount || 0);
@@ -562,10 +581,10 @@ const SubscriptionPlansCard = ({
                     }`}
                     bodyStyle={{ padding: 0 }}
                   >
-                    <div className='p-4 h-full flex flex-col'>
+                    <div className={compact ? 'p-3 h-full flex flex-col' : 'p-4 h-full flex flex-col'}>
                       {/* 推荐标签 */}
                       {isPopular && (
-                        <div className='mb-2'>
+                        <div className={compact ? 'mb-1' : 'mb-2'}>
                           <Tag color='purple' shape='circle' size='small'>
                             <Sparkles size={10} className='mr-1' />
                             {t('推荐')}
@@ -573,15 +592,15 @@ const SubscriptionPlansCard = ({
                         </div>
                       )}
                       {/* 套餐名称 */}
-                      <div className='mb-3'>
+                      <div className={compact ? 'mb-2' : 'mb-3'}>
                         <Typography.Title
-                          heading={5}
+                          heading={compact ? 6 : 5}
                           ellipsis={{ rows: 1, showTooltip: true }}
                           style={{ margin: 0 }}
                         >
                           {plan?.title || t('订阅套餐')}
                         </Typography.Title>
-                        {plan?.subtitle && (
+                        {plan?.subtitle && !compact && (
                           <Text
                             type='tertiary'
                             size='small'
@@ -594,12 +613,12 @@ const SubscriptionPlansCard = ({
                       </div>
 
                       {/* 价格区域 */}
-                      <div className='py-2'>
+                      <div className={compact ? 'py-1' : 'py-2'}>
                         <div className='flex items-baseline justify-start'>
-                          <span className='text-xl font-bold text-purple-600'>
+                          <span className={compact ? 'text-lg font-bold text-purple-600' : 'text-xl font-bold text-purple-600'}>
                             {symbol}
                           </span>
-                          <span className='text-3xl font-bold text-purple-600'>
+                          <span className={compact ? 'text-2xl font-bold text-purple-600' : 'text-3xl font-bold text-purple-600'}>
                             {displayPrice}
                           </span>
                         </div>
@@ -609,9 +628,9 @@ const SubscriptionPlansCard = ({
                       <div className='flex flex-col items-start gap-1 pb-2'>
                         {planBenefits.map((item) => {
                           const content = (
-                            <div className='flex items-center gap-2 text-xs text-gray-500'>
+                            <div className={compact ? 'flex items-center gap-1.5 text-xs text-gray-500' : 'flex items-center gap-2 text-xs text-gray-500'}>
                               <Badge dot type='tertiary' />
-                              <span>{item.label}</span>
+                              <span className={compact ? 'truncate' : ''}>{item.label}</span>
                             </div>
                           );
                           if (!item.tooltip) {
@@ -635,7 +654,7 @@ const SubscriptionPlansCard = ({
                       </div>
 
                       <div className='mt-auto'>
-                        <Divider margin={12} />
+                        <Divider margin={compact ? 8 : 12} />
 
                         {/* 购买按钮 */}
                         {(() => {
@@ -651,7 +670,13 @@ const SubscriptionPlansCard = ({
                               block
                               disabled={reached}
                               onClick={() => {
-                                if (!reached) openBuy(p);
+                                if (!reached) {
+                                  if (onSubscribeNow) {
+                                    onSubscribeNow(plan);
+                                  } else {
+                                    openBuy(p);
+                                  }
+                                }
                               }}
                             >
                               {reached ? t('已达上限') : t('立即订阅')}
