@@ -107,5 +107,8 @@ export default defineConfig({
         changeOrigin: true,
       },
     },
+    allowedHosts: [
+      "testlocal.rgslb.net"
+    ],
   },
 });

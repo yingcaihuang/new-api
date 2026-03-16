@@ -48,14 +48,38 @@ func GetTopUpInfo(c *gin.Context) {
 		}
 	}
 
+	// 如果启用了支付宝官方支付，添加到支付方法列表
+	if setting.AlipayEnabled && setting.AlipayAppID != "" && setting.AlipayPrivateKey != "" {
+		// 检查是否已经包含支付宝官方支付
+		hasAlipayOfficial := false
+		for _, method := range payMethods {
+			if method["type"] == "alipay_official" {
+				hasAlipayOfficial = true
+				break
+			}
+		}
+
+		if !hasAlipayOfficial {
+			alipayMethod := map[string]string{
+				"name":      "支付宝（官方）",
+				"type":      "alipay_official",
+				"color":     "rgba(var(--semi-blue-5), 1)",
+				"min_topup": strconv.Itoa(setting.AlipayMinTopUp),
+			}
+			payMethods = append(payMethods, alipayMethod)
+		}
+	}
+
 	data := gin.H{
 		"enable_online_topup": operation_setting.PayAddress != "" && operation_setting.EpayId != "" && operation_setting.EpayKey != "",
 		"enable_stripe_topup": setting.StripeApiSecret != "" && setting.StripeWebhookSecret != "" && setting.StripePriceId != "",
 		"enable_creem_topup":  setting.CreemApiKey != "" && setting.CreemProducts != "[]",
+		"enable_alipay_topup": setting.AlipayEnabled && setting.AlipayAppID != "" && setting.AlipayPrivateKey != "",
 		"creem_products":      setting.CreemProducts,
 		"pay_methods":         payMethods,
 		"min_topup":           operation_setting.MinTopUp,
 		"stripe_min_topup":    setting.StripeMinTopUp,
+		"alipay_min_topup":    setting.AlipayMinTopUp,
 		"amount_options":      operation_setting.GetPaymentSetting().AmountOptions,
 		"discount":            operation_setting.GetPaymentSetting().AmountDiscount,
 	}

@@ -34,6 +34,7 @@ import { API, showError, showSuccess, renderQuota } from '../../helpers';
 import { getCurrencyConfig } from '../../helpers/render';
 import { RefreshCw, Sparkles } from 'lucide-react';
 import SubscriptionPurchaseModal from './modals/SubscriptionPurchaseModal';
+import AlipayQRCodeModal from './modals/AlipayQRCodeModal';
 import {
   formatSubscriptionDuration,
   formatSubscriptionResetPeriod,
@@ -77,6 +78,7 @@ const SubscriptionPlansCard = ({
   enableOnlineTopUp = false,
   enableStripeTopUp = false,
   enableCreemTopUp = false,
+  enableAlipayTopUp = false,
   billingPreference,
   onChangeBillingPreference,
   activeSubscriptions = [],
@@ -89,6 +91,10 @@ const SubscriptionPlansCard = ({
   const [paying, setPaying] = useState(false);
   const [selectedEpayMethod, setSelectedEpayMethod] = useState('');
   const [refreshing, setRefreshing] = useState(false);
+  const [alipayModalVisible, setAlipayModalVisible] = useState(false);
+  const [alipayTradeNo, setAlipayTradeNo] = useState('');
+  const [alipayQrCodeUrl, setAlipayQrCodeUrl] = useState('');
+  const [alipayAmount, setAlipayAmount] = useState(0);
 
   const epayMethods = useMemo(() => getEpayMethods(payMethods), [payMethods]);
 
@@ -183,6 +189,37 @@ const SubscriptionPlansCard = ({
       if (res.data?.message === 'success') {
         submitEpayForm({ url: res.data.url, params: res.data.data });
         showSuccess(t('已发起支付'));
+        closeBuy();
+      } else {
+        const errorMsg =
+          typeof res.data?.data === 'string'
+            ? res.data.data
+            : res.data?.message || t('支付失败');
+        showError(errorMsg);
+      }
+    } catch (e) {
+      showError(t('支付请求失败'));
+    } finally {
+      setPaying(false);
+    }
+  };
+
+  const payAlipay = async () => {
+    if (!enableAlipayTopUp) {
+      showError(t('管理员未开启支付宝官方支付！'));
+      return;
+    }
+    setPaying(true);
+    try {
+      const res = await API.post('/api/subscription/alipay/pay', {
+        plan_id: selectedPlan.plan.id,
+      });
+
+      if (res.data?.message === 'success') {
+        setAlipayModalVisible(true);
+        setAlipayTradeNo(res.data.data.trade_no);
+        setAlipayQrCodeUrl(res.data.data.qr_code_url);
+        setAlipayAmount(selectedPlan.plan.price_amount);
         closeBuy();
       } else {
         const errorMsg =
@@ -665,6 +702,7 @@ const SubscriptionPlansCard = ({
         enableOnlineTopUp={enableOnlineTopUp}
         enableStripeTopUp={enableStripeTopUp}
         enableCreemTopUp={enableCreemTopUp}
+        enableAlipayTopUp={enableAlipayTopUp}
         purchaseLimitInfo={
           selectedPlan?.plan?.id
             ? {
@@ -676,6 +714,23 @@ const SubscriptionPlansCard = ({
         onPayStripe={payStripe}
         onPayCreem={payCreem}
         onPayEpay={payEpay}
+        onPayAlipay={payAlipay}
+      />
+
+      {/* 支付宝二维码支付弹窗 */}
+      <AlipayQRCodeModal
+        visible={alipayModalVisible}
+        type="subscription"
+        onClose={(success) => {
+          setAlipayModalVisible(false);
+          if (success) {
+            reloadSubscriptionSelf?.();
+            showSuccess(t('订阅成功！'));
+          }
+        }}
+        tradeNo={alipayTradeNo}
+        amount={alipayAmount}
+        qrCodeUrl={alipayQrCodeUrl}
       />
     </>
   );

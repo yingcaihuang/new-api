@@ -38,6 +38,7 @@ import InvitationCard from './InvitationCard';
 import TransferModal from './modals/TransferModal';
 import PaymentConfirmModal from './modals/PaymentConfirmModal';
 import TopupHistoryModal from './modals/TopupHistoryModal';
+import AlipayQRCodeModal from './modals/AlipayQRCodeModal';
 
 const TopUp = () => {
   const { t } = useTranslation();
@@ -68,6 +69,14 @@ const TopUp = () => {
   const [enableCreemTopUp, setEnableCreemTopUp] = useState(false);
   const [creemOpen, setCreemOpen] = useState(false);
   const [selectedCreemProduct, setSelectedCreemProduct] = useState(null);
+
+  // 支付宝官方支付相关状态
+  const [enableAlipayTopUp, setEnableAlipayTopUp] = useState(false);
+  const [alipayMinTopUp, setAlipayMinTopUp] = useState(1);
+  const [alipayModalVisible, setAlipayModalVisible] = useState(false);
+  const [alipayTradeNo, setAlipayTradeNo] = useState('');
+  const [alipayQrCodeUrl, setAlipayQrCodeUrl] = useState('');
+  const [alipayAmount, setAlipayAmount] = useState(0);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [open, setOpen] = useState(false);
@@ -155,11 +164,36 @@ const TopUp = () => {
         showError(t('管理员未开启Stripe充值！'));
         return;
       }
+    } else if (payment === 'alipay_official') {
+      if (!enableAlipayTopUp) {
+        showError(t('管理员未开启支付宝官方支付！'));
+        return;
+      }
     } else {
       if (!enableOnlineTopUp) {
         showError(t('管理员未开启在线充值！'));
         return;
       }
+    }
+
+    // 支付宝官方支付直接调起，不显示确认弹窗
+    if (payment === 'alipay_official') {
+      setPayWay(payment);
+      setPaymentLoading(true);
+      try {
+        await getAmount();
+
+        if (topUpCount < alipayMinTopUp) {
+          showError(t('充值数量不能小于') + alipayMinTopUp);
+          return;
+        }
+        await requestAlipayPay();
+      } catch (error) {
+        showError(t('获取金额失败'));
+      } finally {
+        setPaymentLoading(false);
+      }
+      return;
     }
 
     setPayWay(payment);
@@ -260,6 +294,35 @@ const TopUp = () => {
       showError(t('支付请求失败'));
     } finally {
       setOpen(false);
+      setConfirmLoading(false);
+    }
+  };
+
+  // 支付宝官方支付请求
+  const requestAlipayPay = async () => {
+    setConfirmLoading(true);
+    try {
+      const res = await API.post('/api/user/alipay/pay', {
+        amount: parseInt(topUpCount),
+        payment_method: 'alipay_official',
+      });
+
+      if (res.data?.success && res.data?.data) {
+        setAlipayModalVisible(true);
+        setAlipayTradeNo(res.data.data.trade_no);
+        setAlipayQrCodeUrl(res.data.data.qr_code_url);
+        setAlipayAmount(res.data.data.amount);
+      } else {
+        const errorMsg =
+          typeof res.data?.data === 'string'
+            ? res.data.data
+            : res.data?.message || t('支付失败');
+        showError(errorMsg);
+      }
+    } catch (err) {
+      console.error(err);
+      showError(t('支付请求失败'));
+    } finally {
       setConfirmLoading(false);
     }
   };
@@ -445,14 +508,20 @@ const TopUp = () => {
           const enableStripeTopUp = data.enable_stripe_topup || false;
           const enableOnlineTopUp = data.enable_online_topup || false;
           const enableCreemTopUp = data.enable_creem_topup || false;
+          const enableAlipayTopUp = data.enable_alipay_topup || false;
+          const alipayMin = data.alipay_min_topup || 1;
           const minTopUpValue = enableOnlineTopUp
             ? data.min_topup
             : enableStripeTopUp
               ? data.stripe_min_topup
-              : 1;
+              : enableAlipayTopUp
+                ? alipayMin
+                : 1;
           setEnableOnlineTopUp(enableOnlineTopUp);
           setEnableStripeTopUp(enableStripeTopUp);
           setEnableCreemTopUp(enableCreemTopUp);
+          setEnableAlipayTopUp(enableAlipayTopUp);
+          setAlipayMinTopUp(alipayMin);
           setMinTopUp(minTopUpValue);
           setTopUpCount(minTopUpValue);
 
@@ -731,6 +800,22 @@ const TopUp = () => {
         )}
       </Modal>
 
+      {/* 支付宝扫码支付弹窗 */}
+      <AlipayQRCodeModal
+        visible={alipayModalVisible}
+        type="topup"
+        onClose={(success) => {
+          setAlipayModalVisible(false);
+          if (success) {
+            getUserQuota();
+            showSuccess(t('充值成功！'));
+          }
+        }}
+        tradeNo={alipayTradeNo}
+        amount={alipayAmount}
+        qrCodeUrl={alipayQrCodeUrl}
+      />
+
       {/* 主布局区域 */}
       <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
         <RechargeCard
@@ -738,6 +823,7 @@ const TopUp = () => {
           enableOnlineTopUp={enableOnlineTopUp}
           enableStripeTopUp={enableStripeTopUp}
           enableCreemTopUp={enableCreemTopUp}
+          enableAlipayTopUp={enableAlipayTopUp}
           creemProducts={creemProducts}
           creemPreTopUp={creemPreTopUp}
           presetAmounts={presetAmounts}
