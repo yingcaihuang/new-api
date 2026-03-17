@@ -161,3 +161,55 @@ func GetVerificationByAdmin(c *gin.Context) {
 
 	common.ApiSuccess(c, response)
 }
+
+// UpdateVerificationRequest 管理员更新实名认证请求
+type UpdateVerificationRequest struct {
+	RealName     string `json:"real_name" binding:"required,min=2,max=20"`
+	IdCardNumber string `json:"id_card_number" binding:"required,len=18"`
+	Status       int    `json:"status" binding:"required,oneof=0 2"`
+}
+
+// UpdateVerificationByAdmin 管理员更新/添加用户实名认证信息
+func UpdateVerificationByAdmin(c *gin.Context) {
+	userId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		common.ApiErrorI18n(c, i18n.MsgInvalidParams)
+		return
+	}
+
+	var req UpdateVerificationRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		common.ApiErrorI18n(c, i18n.MsgInvalidParams)
+		return
+	}
+
+	// 验证身份证号格式
+	if !validateIdCard(req.IdCardNumber) {
+		common.ApiErrorI18n(c, i18n.MsgUserVerificationInvalidIdCard)
+		return
+	}
+
+	user, err := model.GetUserById(userId, true)
+	if err != nil {
+		common.ApiErrorI18n(c, i18n.MsgUserVerificationNotFound)
+		return
+	}
+
+	// 更新用户信息
+	now := time.Now()
+	user.RealName = req.RealName
+	user.IdCardNumber = req.IdCardNumber
+	user.VerificationStatus = req.Status
+	if req.Status == model.VerificationStatusApproved {
+		user.VerificationTime = &now
+	} else {
+		user.VerificationTime = nil
+	}
+
+	if err := model.DB.Save(user).Error; err != nil {
+		common.ApiError(c, err)
+		return
+	}
+
+	common.ApiSuccessI18n(c, i18n.MsgUserVerificationUpdateSuccess, nil)
+}
