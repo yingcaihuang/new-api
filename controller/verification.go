@@ -213,3 +213,31 @@ func UpdateVerificationByAdmin(c *gin.Context) {
 
 	common.ApiSuccessI18n(c, i18n.MsgUserVerificationUpdateSuccess, nil)
 }
+
+// DeleteVerificationByAdmin 管理员清除用户实名认证信息
+func DeleteVerificationByAdmin(c *gin.Context) {
+	userId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		common.ApiErrorI18n(c, i18n.MsgInvalidParams)
+		return
+	}
+
+	user, err := model.GetUserById(userId, true)
+	if err != nil {
+		common.ApiErrorI18n(c, i18n.MsgUserVerificationNotFound)
+		return
+	}
+
+	// 清除实名认证信息
+	user.RealName = ""
+	user.IdCardNumber = ""
+	user.VerificationStatus = 0
+	user.VerificationTime = nil
+
+	if err := model.DB.Save(user).Error; err != nil {
+		common.ApiError(c, err)
+		return
+	}
+
+	common.ApiSuccessI18n(c, i18n.MsgUserVerificationDeleteSuccess, nil)
+}
