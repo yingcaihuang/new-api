@@ -32,6 +32,7 @@ import DeleteUserModal from './modals/DeleteUserModal';
 import ResetPasskeyModal from './modals/ResetPasskeyModal';
 import ResetTwoFAModal from './modals/ResetTwoFAModal';
 import UserSubscriptionsModal from './modals/UserSubscriptionsModal';
+import UserVerificationModal from './modals/UserVerificationModal';
 
 const UsersTable = (usersData) => {
   const {
@@ -63,6 +64,8 @@ const UsersTable = (usersData) => {
   const [showResetPasskeyModal, setShowResetPasskeyModal] = useState(false);
   const [showResetTwoFAModal, setShowResetTwoFAModal] = useState(false);
   const [showUserSubscriptionsModal, setShowUserSubscriptionsModal] =
+    useState(false);
+  const [showUserVerificationModal, setShowUserVerificationModal] =
     useState(false);
 
   // Modal handlers
@@ -100,6 +103,11 @@ const UsersTable = (usersData) => {
   const showUserSubscriptionsUserModal = (user) => {
     setModalUser(user);
     setShowUserSubscriptionsModal(true);
+  };
+
+  const showUserVerificationUserModal = (user) => {
+    setModalUser(user);
+    setShowUserVerificationModal(true);
   };
 
   // Modal confirm handlers
@@ -141,6 +149,7 @@ const UsersTable = (usersData) => {
       showResetPasskeyModal: showResetPasskeyUserModal,
       showResetTwoFAModal: showResetTwoFAUserModal,
       showUserSubscriptionsModal: showUserSubscriptionsUserModal,
+      showUserVerificationModal: showUserVerificationUserModal,
     });
   }, [
     t,
@@ -153,6 +162,7 @@ const UsersTable = (usersData) => {
     showResetPasskeyUserModal,
     showResetTwoFAUserModal,
     showUserSubscriptionsUserModal,
+    showUserVerificationUserModal,
   ]);
 
   // Handle compact mode by removing fixed positioning
@@ -256,6 +266,14 @@ const UsersTable = (usersData) => {
       <UserSubscriptionsModal
         visible={showUserSubscriptionsModal}
         onCancel={() => setShowUserSubscriptionsModal(false)}
+        user={modalUser}
+        t={t}
+        onSuccess={() => refresh?.()}
+      />
+
+      <UserVerificationModal
+        visible={showUserVerificationModal}
+        onCancel={() => setShowUserVerificationModal(false)}
         user={modalUser}
         t={t}
         onSuccess={() => refresh?.()}
