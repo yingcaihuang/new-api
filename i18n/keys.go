@@ -99,7 +99,14 @@ const (
 	MsgUserWeChatIdEmpty             = "user.wechat_id_empty"
 	MsgUserTelegramIdEmpty           = "user.telegram_id_empty"
 	MsgUserTelegramNotBound          = "user.telegram_not_bound"
-	MsgUserLinuxDOIdEmpty            = "user.linux_do_id_empty"
+	MsgUserLinuxDOIdEmpty               = "user.linux_do_id_empty"
+	MsgUserVerificationRequired         = "user.verification_required"
+	MsgUserVerificationAlreadySubmitted = "user.verification_already_submitted"
+	MsgUserVerificationInvalidIdCard    = "user.verification_invalid_id_card"
+	MsgUserVerificationSubmitSuccess    = "user.verification_submit_success"
+	MsgUserVerificationNotFound         = "user.verification.not_found"
+	MsgUserVerificationUpdateSuccess    = "user.verification.update_success"
+	MsgUserVerificationDeleteSuccess    = "user.verification.delete_success"
 )
 
 // Email related messages

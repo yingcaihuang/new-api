@@ -91,6 +91,13 @@ user.wechat_id_empty: "WeChat id 為空！"
 user.telegram_id_empty: "Telegram id 為空！"
 user.telegram_not_bound: "該 Telegram 帳號未綁定"
 user.linux_do_id_empty: "Linux DO id 為空！"
+user.verification_required: "請先完成實名認證後再使用此功能"
+user.verification_already_submitted: "您已經提交過實名認證"
+user.verification_invalid_id_card: "身份證號格式不正確"
+user.verification_submit_success: "實名認證提交成功"
+user.verification.not_found: "用戶不存在或未認證"
+user.verification.update_success: "更新實名認證信息成功"
+user.verification.delete_success: "已清除實名認證信息"
 
 # Email messages
 email.verification.subject: "{{.SystemName}}信箱驗證郵件"

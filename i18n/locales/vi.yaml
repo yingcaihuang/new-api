@@ -5,3 +5,12 @@ email.verification.subject: "Xác minh email {{.SystemName}}"
 email.verification.content: "<p>Xin chào,</p><p>Bạn đang thực hiện xác minh email cho {{.SystemName}}.</p><p>Mã xác minh của bạn là: <strong>{{.Code}}</strong></p><p>Mã có hiệu lực trong {{.Minutes}} phút. Nếu không phải bạn, vui lòng bỏ qua email này.</p>"
 email.password_reset.subject: "Đặt lại mật khẩu {{.SystemName}}"
 email.password_reset.content: "<p>Xin chào,</p><p>Bạn đang thực hiện đặt lại mật khẩu cho tài khoản {{.SystemName}}.</p><p>Hãy nhấn <a href='{{.Link}}'>vào đây</a> để đặt lại mật khẩu.</p><p>Nếu không bấm được liên kết, hãy sao chép URL bên dưới vào trình duyệt:<br> {{.Link}} </p><p>Liên kết có hiệu lực trong {{.Minutes}} phút. Nếu không phải bạn, vui lòng bỏ qua email này.</p>"
+
+# User verification messages
+user.verification_required: "Vui lòng hoàn tất xác minh danh tính thực trước khi sử dụng tính năng này"
+user.verification_already_submitted: "Bạn đã gửi xác minh danh tính thực"
+user.verification_invalid_id_card: "Định dạng số CMND/CCCD không hợp lệ"
+user.verification_submit_success: "Xác minh danh tính thực đã được gửi thành công"
+user.verification.not_found: "Không tìm thấy người dùng hoặc chưa xác minh"
+user.verification.update_success: "Cập nhật thông tin xác minh thành công"
+user.verification.delete_success: "Đã xóa thông tin xác minh"
