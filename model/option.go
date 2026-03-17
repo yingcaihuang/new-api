@@ -95,6 +95,14 @@ func InitOptionMap() {
 	common.OptionMap["AlipayPublicKey"] = setting.AlipayPublicKey
 	common.OptionMap["AlipayServerURL"] = setting.AlipayServerURL
 	common.OptionMap["AlipayMinTopUp"] = strconv.Itoa(setting.AlipayMinTopUp)
+	common.OptionMap["WechatEnabled"] = strconv.FormatBool(setting.WechatEnabled)
+	common.OptionMap["WechatAppID"] = setting.WechatAppID
+	common.OptionMap["WechatMchID"] = setting.WechatMchID
+	common.OptionMap["WechatAPIv3Key"] = setting.WechatAPIv3Key
+	common.OptionMap["WechatSerialNo"] = setting.WechatSerialNo
+	common.OptionMap["WechatPrivateKey"] = setting.WechatPrivateKey
+	common.OptionMap["WechatServerURL"] = setting.WechatServerURL
+	common.OptionMap["WechatMinTopUp"] = strconv.Itoa(setting.WechatMinTopUp)
 	common.OptionMap["TopupGroupRatio"] = common.TopupGroupRatio2JSONString()
 	common.OptionMap["Chats"] = setting.Chats2JsonString()
 	common.OptionMap["AutoGroups"] = setting.AutoGroups2JsonString()
@@ -376,6 +384,22 @@ func updateOptionMap(key string, value string) (err error) {
 		setting.AlipayServerURL = value
 	case "AlipayMinTopUp":
 		setting.AlipayMinTopUp, _ = strconv.Atoi(value)
+	case "WechatEnabled":
+		setting.WechatEnabled = value == "true"
+	case "WechatAppID":
+		setting.WechatAppID = value
+	case "WechatMchID":
+		setting.WechatMchID = value
+	case "WechatAPIv3Key":
+		setting.WechatAPIv3Key = value
+	case "WechatSerialNo":
+		setting.WechatSerialNo = value
+	case "WechatPrivateKey":
+		setting.WechatPrivateKey = value
+	case "WechatServerURL":
+		setting.WechatServerURL = value
+	case "WechatMinTopUp":
+		setting.WechatMinTopUp, _ = strconv.Atoi(value)
 	case "TopupGroupRatio":
 		err = common.UpdateTopupGroupRatioByJSONString(value)
 	case "GitHubClientId":

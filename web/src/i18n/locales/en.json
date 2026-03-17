@@ -3414,6 +3414,25 @@
     "请使用支付宝扫码支付": "Please scan with Alipay to pay",
     "正在检测支付状态...": "Checking payment status...",
     "请确保在15分钟内完成支付": "Please complete payment within 15 minutes",
-    "查询超时，请稍后在账单记录中查看": "Query timeout, please check billing records later"
+    "查询超时，请稍后在账单记录中查看": "Query timeout, please check billing records later",
+    "微信官方支付设置": "WeChat Official Payment Settings",
+    "启用微信官方支付": "Enable WeChat Official Payment",
+    "启用后用户可以选择微信官方支付进行充值": "After enabling, users can choose WeChat official payment for top-up",
+    "微信AppID": "WeChat App ID",
+    "请输入微信AppID": "Please enter WeChat App ID",
+    "商户号": "Merchant ID",
+    "请输入商户号": "Please enter Merchant ID",
+    "API v3密钥": "API v3 Key",
+    "请输入API v3密钥": "Please enter API v3 Key",
+    "证书序列号": "Certificate Serial Number",
+    "请输入证书序列号": "Please enter certificate serial number",
+    "商户私钥": "Merchant Private Key",
+    "请输入商户私钥（apiclient_key.pem内容）": "Please enter merchant private key (apiclient_key.pem content)",
+    "微信支付网关地址": "WeChat Pay Gateway URL",
+    "更新微信配置": "Update WeChat Configuration",
+    "微信扫码支付": "WeChat QR Code Payment",
+    "请使用微信扫码支付": "Please scan with WeChat to pay",
+    "管理员未开启微信官方支付！": "Administrator has not enabled WeChat official payment!",
+    "微信支付（官方）": "WeChat Pay (Official)"
   }
 }

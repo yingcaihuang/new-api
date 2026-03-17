@@ -35,6 +35,7 @@ import { getCurrencyConfig } from '../../helpers/render';
 import { RefreshCw, Sparkles } from 'lucide-react';
 import SubscriptionPurchaseModal from './modals/SubscriptionPurchaseModal';
 import AlipayQRCodeModal from './modals/AlipayQRCodeModal';
+import WechatQRCodeModal from './modals/WechatQRCodeModal';
 import {
   formatSubscriptionDuration,
   formatSubscriptionResetPeriod,
@@ -45,7 +46,12 @@ const { Text } = Typography;
 // 过滤易支付方式
 function getEpayMethods(payMethods = []) {
   return (payMethods || []).filter(
-    (m) => m?.type && m.type !== 'stripe' && m.type !== 'creem',
+    (m) =>
+      m?.type &&
+      m.type !== 'stripe' &&
+      m.type !== 'creem' &&
+      m.type !== 'alipay_official' &&
+      m.type !== 'wechat_official',
   );
 }
 
@@ -79,6 +85,7 @@ const SubscriptionPlansCard = ({
   enableStripeTopUp = false,
   enableCreemTopUp = false,
   enableAlipayTopUp = false,
+  enableWechatTopUp = false,
   billingPreference,
   onChangeBillingPreference,
   activeSubscriptions = [],
@@ -99,6 +106,10 @@ const SubscriptionPlansCard = ({
   const [alipayTradeNo, setAlipayTradeNo] = useState('');
   const [alipayQrCodeUrl, setAlipayQrCodeUrl] = useState('');
   const [alipayAmount, setAlipayAmount] = useState(0);
+  const [wechatModalVisible, setWechatModalVisible] = useState(false);
+  const [wechatTradeNo, setWechatTradeNo] = useState('');
+  const [wechatQrCodeUrl, setWechatQrCodeUrl] = useState('');
+  const [wechatAmount, setWechatAmount] = useState(0);
 
   const epayMethods = useMemo(() => getEpayMethods(payMethods), [payMethods]);
 
@@ -235,6 +246,37 @@ const SubscriptionPlansCard = ({
         setAlipayTradeNo(res.data.data.trade_no);
         setAlipayQrCodeUrl(res.data.data.qr_code_url);
         setAlipayAmount(selectedPlan.plan.price_amount);
+        closeBuy();
+      } else {
+        const errorMsg =
+          typeof res.data?.data === 'string'
+            ? res.data.data
+            : res.data?.message || t('支付失败');
+        showError(errorMsg);
+      }
+    } catch (e) {
+      showError(t('支付请求失败'));
+    } finally {
+      setPaying(false);
+    }
+  };
+
+  const payWechat = async () => {
+    if (!enableWechatTopUp) {
+      showError(t('管理员未开启微信官方支付！'));
+      return;
+    }
+    setPaying(true);
+    try {
+      const res = await API.post('/api/subscription/wechat/pay', {
+        plan_id: selectedPlan.plan.id,
+      });
+
+      if (res.data?.message === 'success') {
+        setWechatModalVisible(true);
+        setWechatTradeNo(res.data.data.trade_no);
+        setWechatQrCodeUrl(res.data.data.code_url);
+        setWechatAmount(selectedPlan.plan.price_amount);
         closeBuy();
       } else {
         const errorMsg =
@@ -728,6 +770,7 @@ const SubscriptionPlansCard = ({
         enableStripeTopUp={enableStripeTopUp}
         enableCreemTopUp={enableCreemTopUp}
         enableAlipayTopUp={enableAlipayTopUp}
+        enableWechatTopUp={enableWechatTopUp}
         purchaseLimitInfo={
           selectedPlan?.plan?.id
             ? {
@@ -740,6 +783,7 @@ const SubscriptionPlansCard = ({
         onPayCreem={payCreem}
         onPayEpay={payEpay}
         onPayAlipay={payAlipay}
+        onPayWechat={payWechat}
       />
 
       {/* 支付宝二维码支付弹窗 */}
@@ -756,6 +800,22 @@ const SubscriptionPlansCard = ({
         tradeNo={alipayTradeNo}
         amount={alipayAmount}
         qrCodeUrl={alipayQrCodeUrl}
+      />
+
+      {/* 微信二维码支付弹窗 */}
+      <WechatQRCodeModal
+        visible={wechatModalVisible}
+        type="subscription"
+        onClose={(success) => {
+          setWechatModalVisible(false);
+          if (success) {
+            reloadSubscriptionSelf?.();
+            showSuccess(t('订阅成功！'));
+          }
+        }}
+        tradeNo={wechatTradeNo}
+        amount={wechatAmount}
+        qrCodeUrl={wechatQrCodeUrl}
       />
     </>
   );

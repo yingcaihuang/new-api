@@ -3905,6 +3905,25 @@
     "请使用支付宝扫码支付": "Vui lòng quét mã với Alipay để thanh toán",
     "正在检测支付状态...": "Đang kiểm tra trạng thái thanh toán...",
     "请确保在15分钟内完成支付": "Vui lòng hoàn thành thanh toán trong vòng 15 phút",
-    "查询超时，请稍后在账单记录中查看": "Hết thời gian truy vấn, vui lòng kiểm tra hồ sơ thanh toán sau"
+    "查询超时，请稍后在账单记录中查看": "Hết thời gian truy vấn, vui lòng kiểm tra hồ sơ thanh toán sau",
+    "微信官方支付设置": "Cài đặt thanh toán chính thức WeChat",
+    "启用微信官方支付": "Kích hoạt thanh toán chính thức WeChat",
+    "启用后用户可以选择微信官方支付进行充值": "Sau khi kích hoạt, người dùng có thể chọn thanh toán chính thức WeChat để nạp tiền",
+    "微信AppID": "WeChat App ID",
+    "请输入微信AppID": "Vui lòng nhập WeChat App ID",
+    "商户号": "Merchant ID",
+    "请输入商户号": "Vui lòng nhập Merchant ID",
+    "API v3密钥": "Khóa API v3",
+    "请输入API v3密钥": "Vui lòng nhập khóa API v3",
+    "证书序列号": "Số sê-ri chứng chỉ",
+    "请输入证书序列号": "Vui lòng nhập số sê-ri chứng chỉ",
+    "商户私钥": "Khóa riêng của merchant",
+    "请输入商户私钥（apiclient_key.pem内容）": "Vui lòng nhập khóa riêng của merchant (nội dung apiclient_key.pem)",
+    "微信支付网关地址": "Địa chỉ gateway WeChat Pay",
+    "更新微信配置": "Cập nhật cấu hình WeChat",
+    "微信扫码支付": "Thanh toán WeChat bằng mã QR",
+    "请使用微信扫码支付": "Vui lòng quét mã với WeChat để thanh toán",
+    "管理员未开启微信官方支付！": "Quản trị viên chưa kích hoạt thanh toán chính thức WeChat!",
+    "微信支付（官方）": "WeChat Pay (Chính thức)"
   }
 }

@@ -40,6 +40,7 @@ import TransferModal from './modals/TransferModal';
 import PaymentConfirmModal from './modals/PaymentConfirmModal';
 import TopupHistoryModal from './modals/TopupHistoryModal';
 import AlipayQRCodeModal from './modals/AlipayQRCodeModal';
+import WechatQRCodeModal from './modals/WechatQRCodeModal';
 
 const TopUp = () => {
   const { t } = useTranslation();
@@ -80,6 +81,14 @@ const TopUp = () => {
   const [alipayTradeNo, setAlipayTradeNo] = useState('');
   const [alipayQrCodeUrl, setAlipayQrCodeUrl] = useState('');
   const [alipayAmount, setAlipayAmount] = useState(0);
+
+  // 微信官方支付相关状态
+  const [enableWechatTopUp, setEnableWechatTopUp] = useState(false);
+  const [wechatMinTopUp, setWechatMinTopUp] = useState(1);
+  const [wechatModalVisible, setWechatModalVisible] = useState(false);
+  const [wechatTradeNo, setWechatTradeNo] = useState('');
+  const [wechatQrCodeUrl, setWechatQrCodeUrl] = useState('');
+  const [wechatAmount, setWechatAmount] = useState(0);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [open, setOpen] = useState(false);
@@ -191,6 +200,30 @@ const TopUp = () => {
           return;
         }
         await requestAlipayPay();
+      } catch (error) {
+        showError(t('获取金额失败'));
+      } finally {
+        setPaymentLoading(false);
+      }
+      return;
+    }
+
+    // 微信官方支付直接调起，不显示确认弹窗
+    if (payment === 'wechat_official') {
+      if (!enableWechatTopUp) {
+        showError(t('管理员未开启微信官方支付！'));
+        return;
+      }
+      setPayWay(payment);
+      setPaymentLoading(true);
+      try {
+        await getAmount();
+
+        if (topUpCount < wechatMinTopUp) {
+          showError(t('充值数量不能小于') + wechatMinTopUp);
+          return;
+        }
+        await requestWechatPay();
       } catch (error) {
         showError(t('获取金额失败'));
       } finally {
@@ -315,6 +348,35 @@ const TopUp = () => {
         setAlipayTradeNo(res.data.data.trade_no);
         setAlipayQrCodeUrl(res.data.data.qr_code_url);
         setAlipayAmount(res.data.data.amount);
+      } else {
+        const errorMsg =
+          typeof res.data?.data === 'string'
+            ? res.data.data
+            : res.data?.message || t('支付失败');
+        showError(errorMsg);
+      }
+    } catch (err) {
+      console.error(err);
+      showError(t('支付请求失败'));
+    } finally {
+      setConfirmLoading(false);
+    }
+  };
+
+  // 微信官方支付请求
+  const requestWechatPay = async () => {
+    setConfirmLoading(true);
+    try {
+      const res = await API.post('/api/user/wechat/pay', {
+        amount: parseInt(topUpCount),
+        payment_method: 'wechat_official',
+      });
+
+      if (res.data?.success && res.data?.data) {
+        setWechatModalVisible(true);
+        setWechatTradeNo(res.data.data.trade_no);
+        setWechatQrCodeUrl(res.data.data.code_url);
+        setWechatAmount(res.data.data.amount);
       } else {
         const errorMsg =
           typeof res.data?.data === 'string'
@@ -512,21 +574,36 @@ const TopUp = () => {
           const enableOnlineTopUp = data.enable_online_topup || false;
           const enableCreemTopUp = data.enable_creem_topup || false;
           const enableAlipayTopUp = data.enable_alipay_topup || false;
+          const enableWechatTopUp = data.enable_wechat_topup || false;
           const alipayMin = data.alipay_min_topup || 1;
+          const wechatMin = data.wechat_min_topup || 1;
           const minTopUpValue = enableOnlineTopUp
             ? data.min_topup
             : enableStripeTopUp
               ? data.stripe_min_topup
               : enableAlipayTopUp
                 ? alipayMin
-                : 1;
+                : enableWechatTopUp
+                  ? wechatMin
+                  : 1;
           setEnableOnlineTopUp(enableOnlineTopUp);
           setEnableStripeTopUp(enableStripeTopUp);
           setEnableCreemTopUp(enableCreemTopUp);
           setEnableAlipayTopUp(enableAlipayTopUp);
           setAlipayMinTopUp(alipayMin);
+          setEnableWechatTopUp(enableWechatTopUp);
+          setWechatMinTopUp(wechatMin);
           setMinTopUp(minTopUpValue);
           setTopUpCount(minTopUpValue);
+
+          // 调试日志
+          console.log('微信支付配置:', {
+            enableWechatTopUp,
+            wechatMin,
+            enable_wechat_topup: data.enable_wechat_topup,
+            wechat_min_topup: data.wechat_min_topup,
+          });
+          console.log('支付方式列表:', payMethods);
 
           // 设置 Creem 产品
           try {
@@ -829,6 +906,22 @@ const TopUp = () => {
         qrCodeUrl={alipayQrCodeUrl}
       />
 
+      {/* 微信扫码支付弹窗 */}
+      <WechatQRCodeModal
+        visible={wechatModalVisible}
+        type="topup"
+        onClose={(success) => {
+          setWechatModalVisible(false);
+          if (success) {
+            getUserQuota();
+            showSuccess(t('充值成功！'));
+          }
+        }}
+        tradeNo={wechatTradeNo}
+        amount={wechatAmount}
+        qrCodeUrl={wechatQrCodeUrl}
+      />
+
       {/* 主布局区域 */}
       <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
         <RechargeCard
@@ -837,6 +930,7 @@ const TopUp = () => {
           enableStripeTopUp={enableStripeTopUp}
           enableCreemTopUp={enableCreemTopUp}
           enableAlipayTopUp={enableAlipayTopUp}
+          enableWechatTopUp={enableWechatTopUp}
           creemProducts={creemProducts}
           creemPreTopUp={creemPreTopUp}
           presetAmounts={presetAmounts}

@@ -29,7 +29,7 @@ import {
   Tooltip,
 } from '@douyinfe/semi-ui';
 import { Crown, CalendarClock, Package } from 'lucide-react';
-import { SiStripe, SiAlipay } from 'react-icons/si';
+import { SiStripe, SiAlipay, SiWechat } from 'react-icons/si';
 import { IconCreditCard } from '@douyinfe/semi-icons';
 import { renderQuota } from '../../../helpers';
 import { getCurrencyConfig } from '../../../helpers/render';
@@ -53,11 +53,13 @@ const SubscriptionPurchaseModal = ({
   enableStripeTopUp = false,
   enableCreemTopUp = false,
   enableAlipayTopUp = false,
+  enableWechatTopUp = false,
   purchaseLimitInfo = null,
   onPayStripe,
   onPayCreem,
   onPayEpay,
   onPayAlipay,
+  onPayWechat,
 }) => {
   const plan = selectedPlan?.plan;
   const totalAmount = Number(plan?.total_amount || 0);
@@ -72,7 +74,8 @@ const SubscriptionPurchaseModal = ({
   const hasCreem = enableCreemTopUp && !!plan?.creem_product_id;
   const hasEpay = enableOnlineTopUp && epayMethods.length > 0;
   const hasAlipay = enableAlipayTopUp; // 支付宝不需要套餐配置特定ID
-  const hasAnyPayment = hasStripe || hasCreem || hasEpay || hasAlipay;
+  const hasWechat = enableWechatTopUp; // 微信支付不需要套餐配置特定ID
+  const hasAnyPayment = hasStripe || hasCreem || hasEpay || hasAlipay || hasWechat;
   const purchaseLimit = Number(purchaseLimitInfo?.limit || 0);
   const purchaseCount = Number(purchaseLimitInfo?.count || 0);
   const purchaseLimitReached =
@@ -256,6 +259,20 @@ const SubscriptionPurchaseModal = ({
                   disabled={purchaseLimitReached}
                 >
                   {t('支付宝扫码支付')}
+                </Button>
+              )}
+
+              {/* 微信官方支付 */}
+              {hasWechat && (
+                <Button
+                  theme='light'
+                  block
+                  icon={<SiWechat size={14} color='#07C160' />}
+                  onClick={onPayWechat}
+                  loading={paying}
+                  disabled={purchaseLimitReached}
+                >
+                  {t('微信扫码支付')}
                 </Button>
               )}
             </div>

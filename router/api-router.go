@@ -50,6 +50,8 @@ func SetApiRouter(router *gin.Engine) {
 		apiRouter.POST("/creem/webhook", controller.CreemWebhook)
 		apiRouter.POST("/alipay/notify", controller.AlipayNotify)
 		apiRouter.GET("/alipay/notify", controller.AlipayNotify)
+		apiRouter.POST("/wechat/notify", controller.WechatNotify)
+		apiRouter.GET("/wechat/notify", controller.WechatNotify)
 
 		// Universal secure verification routes
 		apiRouter.POST("/verify", middleware.UserAuth(), middleware.CriticalRateLimit(), controller.UniversalVerify)
@@ -93,6 +95,8 @@ func SetApiRouter(router *gin.Engine) {
 				selfRoute.POST("/creem/pay", middleware.CriticalRateLimit(), controller.RequestCreemPay)
 				selfRoute.POST("/alipay/pay", middleware.CriticalRateLimit(), controller.RequestAlipayPay)
 				selfRoute.GET("/alipay/query", controller.QueryAlipayOrder)
+				selfRoute.POST("/wechat/pay", middleware.CriticalRateLimit(), controller.RequestWechatPay)
+				selfRoute.GET("/wechat/query", controller.QueryWechatOrder)
 				selfRoute.POST("/aff_transfer", controller.TransferAffQuota)
 				selfRoute.PUT("/setting", controller.UpdateUserSetting)
 
@@ -147,6 +151,8 @@ func SetApiRouter(router *gin.Engine) {
 			subscriptionRoute.POST("/creem/pay", middleware.CriticalRateLimit(), controller.SubscriptionRequestCreemPay)
 			subscriptionRoute.POST("/alipay/pay", middleware.CriticalRateLimit(), controller.SubscriptionRequestAlipayPay)
 			subscriptionRoute.GET("/alipay/query", controller.SubscriptionQueryAlipayOrder)
+			subscriptionRoute.POST("/wechat/pay", middleware.CriticalRateLimit(), controller.SubscriptionRequestWechatPay)
+			subscriptionRoute.GET("/wechat/query", controller.SubscriptionQueryWechatOrder)
 		}
 		subscriptionAdminRoute := apiRouter.Group("/subscription/admin")
 		subscriptionAdminRoute.Use(middleware.AdminAuth())
@@ -171,6 +177,8 @@ func SetApiRouter(router *gin.Engine) {
 		apiRouter.POST("/subscription/epay/return", controller.SubscriptionEpayReturn)
 		apiRouter.POST("/subscription/alipay/notify", controller.SubscriptionAlipayNotify)
 		apiRouter.GET("/subscription/alipay/notify", controller.SubscriptionAlipayNotify)
+		apiRouter.POST("/subscription/wechat/notify", controller.SubscriptionWechatNotify)
+		apiRouter.GET("/subscription/wechat/notify", controller.SubscriptionWechatNotify)
 
 		// Public subscription routes (no auth required)
 		apiRouter.GET("/subscription/public/plans", controller.GetSubscriptionPlans)
