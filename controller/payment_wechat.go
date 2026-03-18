@@ -34,7 +34,13 @@ type WechatPayRequest struct {
 
 // initWechatClient 初始化微信支付客户端
 func initWechatClient() (*core.Client, error) {
-	if !setting.WechatEnabled || setting.WechatMchID == "" || setting.WechatAPIv3Key == "" || setting.WechatPrivateKey == "" {
+	// 配置完整性检查
+	if !setting.WechatEnabled ||
+		setting.WechatMchID == "" ||
+		setting.WechatAPIv3Key == "" ||
+		setting.WechatPrivateKey == "" ||
+		setting.WechatPublicKey == "" ||
+		setting.WechatPublicKeyID == "" {
 		return nil, errors.New("微信支付未启用或配置不完整")
 	}
 
@@ -44,15 +50,22 @@ func initWechatClient() (*core.Client, error) {
 		return nil, fmt.Errorf("加载商户私钥失败: %v", err)
 	}
 
+	// 加载微信支付平台公钥
+	wechatPublicKey, err := utils.LoadPublicKey(setting.WechatPublicKey)
+	if err != nil {
+		return nil, fmt.Errorf("加载微信支付平台公钥失败: %v", err)
+	}
+
 	// 初始化客户端
 	ctx := context.Background()
 	client, err := core.NewClient(
 		ctx,
-		option.WithWechatPayAutoAuthCipher(
+		option.WithWechatPayPublicKeyAuthCipher(
 			setting.WechatMchID,
 			setting.WechatSerialNo,
 			mchPrivateKey,
-			setting.WechatAPIv3Key,
+			setting.WechatPublicKeyID,
+			wechatPublicKey,
 		),
 	)
 	if err != nil {
