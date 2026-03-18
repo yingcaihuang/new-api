@@ -98,7 +98,7 @@ const UserVerificationModal = ({ visible, onCancel, user, t, onSuccess }) => {
         const data = res.data.data;
         setVerification(data);
         // If no verification exists, enter edit mode automatically
-        if (!data?.real_name && !data?.id_card) {
+        if (!data?.real_name && !data?.id_card_number) {
           setIsEditMode(true);
         }
       } else {
@@ -129,15 +129,15 @@ const UserVerificationModal = ({ visible, onCancel, user, t, onSuccess }) => {
     if (isEditMode && verification) {
       formApiRef.current.setValues({
         real_name: verification.real_name || '',
-        id_card: verification.id_card || '',
-        status: verification.status || 'unverified',
+        id_card_number: verification.id_card_number || '',
+        status: verification.status || 0,
       });
     } else if (isEditMode && !verification) {
       // New verification
       formApiRef.current.setValues({
         real_name: '',
-        id_card: '',
-        status: 'unverified',
+        id_card_number: '',
+        status: 0,
       });
     }
   }, [isEditMode, verification]);
@@ -150,7 +150,7 @@ const UserVerificationModal = ({ visible, onCancel, user, t, onSuccess }) => {
     }
 
     // Validate ID card
-    if (!validateIdCard(values.id_card)) {
+    if (!validateIdCard(values.id_card_number)) {
       showError(t('身份证号格式不正确'));
       return;
     }
@@ -159,7 +159,7 @@ const UserVerificationModal = ({ visible, onCancel, user, t, onSuccess }) => {
     try {
       const res = await API.put(`/api/user/${user.id}/verification`, {
         real_name: values.real_name,
-        id_card: values.id_card,
+        id_card_number: values.id_card_number,
         status: values.status,
       });
       if (res.data?.success) {
@@ -205,7 +205,7 @@ const UserVerificationModal = ({ visible, onCancel, user, t, onSuccess }) => {
 
   // Render view mode
   const renderViewMode = () => {
-    const hasVerification = verification?.real_name || verification?.id_card;
+    const hasVerification = verification?.real_name || verification?.id_card_number;
 
     if (!hasVerification) {
       return (
@@ -233,7 +233,7 @@ const UserVerificationModal = ({ visible, onCancel, user, t, onSuccess }) => {
           <Text type='secondary' className='block mb-2'>
             {t('认证状态')}
           </Text>
-          {verification?.status === 'verified' ? (
+          {verification?.status === 2 ? (
             <Tag color='green' size='large'>
               {t('已验证')}
             </Tag>
@@ -260,8 +260,8 @@ const UserVerificationModal = ({ visible, onCancel, user, t, onSuccess }) => {
           <Space>
             <Text>
               {showIdCard
-                ? verification?.id_card || '-'
-                : maskIdCard(verification?.id_card) || '-'}
+                ? verification?.id_card_number || '-'
+                : maskIdCard(verification?.id_card_number) || '-'}
             </Text>
             <Button
               type='tertiary'
@@ -326,7 +326,7 @@ const UserVerificationModal = ({ visible, onCancel, user, t, onSuccess }) => {
           />
 
           <Form.Input
-            field='id_card'
+            field='id_card_number'
             label={t('身份证号')}
             placeholder={t('请输入18位身份证号')}
             rules={[
@@ -355,8 +355,8 @@ const UserVerificationModal = ({ visible, onCancel, user, t, onSuccess }) => {
             rules={[{ required: true }]}
             style={{ width: '100%' }}
           >
-            <Select.Option value='unverified'>{t('未验证')}</Select.Option>
-            <Select.Option value='verified'>{t('已验证')}</Select.Option>
+            <Select.Option value={0}>{t('未验证')}</Select.Option>
+            <Select.Option value={2}>{t('已验证')}</Select.Option>
           </Form.Select>
 
           <Banner
