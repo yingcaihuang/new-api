@@ -49,8 +49,17 @@ var WechatPublicKeyID = ""    // 微信支付平台公钥ID
 
 | 字段名 | 类型 | 说明 | 示例 |
 |--------|------|------|------|
-| `WechatPublicKey` | string | 微信支付平台公钥的完整PEM内容 | `-----BEGIN PUBLIC KEY-----\nMIIBIj...` |
+| `WechatPublicKey` | string | 微信支付平台公钥的完整PEM内容 | `-----BEGIN PUBLIC KEY-----\nMIIBIjANBg...\n-----END PUBLIC KEY-----` |
 | `WechatPublicKeyID` | string | 微信支付平台提供的公钥ID | `PUB_KEY_ID_0117401704292026031300212083003200` |
+
+**PEM格式示例**：
+```
+-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA...
+(多行Base64编码内容)
+...xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+-----END PUBLIC KEY-----
+```
 
 ### 2.3 配置验证
 
@@ -109,7 +118,7 @@ func initWechatClient() (*core.Client, error) {
     }
 
     // 3. 加载微信支付平台公钥（新增，使用SDK提供的函数）
-    mchPublicKey, err := utils.LoadPublicKey(setting.WechatPublicKey)
+    wechatPublicKey, err := utils.LoadPublicKey(setting.WechatPublicKey)
     if err != nil {
         return nil, fmt.Errorf("加载微信支付平台公钥失败: %v", err)
     }
@@ -123,7 +132,7 @@ func initWechatClient() (*core.Client, error) {
             setting.WechatSerialNo,
             mchPrivateKey,
             setting.WechatPublicKeyID,
-            mchPublicKey,
+            wechatPublicKey,
         ),
     )
     if err != nil {
@@ -134,13 +143,17 @@ func initWechatClient() (*core.Client, error) {
 }
 ```
 
-**需要删除的代码**：
-1. 硬编码的公钥文件路径加载：
+**需要删除/修复的代码**：
+1. 硬编码的公钥文件路径加载（line 51-54）：
    ```go
    mchPublicKey, err := utils.LoadPublicKeyWithPath("/Users/feng/pub_key.pem")
+   if err != nil {
+       return nil, fmt.Errorf("加载商户私钥失败: %v", err)  // 错误消息也需要修正
+   }
    ```
+   **注意**：错误消息说"加载商户私钥失败"但实际加载的是公钥，这是一个错误
 
-2. 注释掉的 `WithWechatPayAutoAuthCipher` 代码块：
+2. 注释掉的 `WithWechatPayAutoAuthCipher` 代码块（line 60-65）：
    ```go
    // option.WithWechatPayAutoAuthCipher(
    //     setting.WechatMchID,
@@ -150,7 +163,7 @@ func initWechatClient() (*core.Client, error) {
    // ),
    ```
 
-3. 硬编码的公钥ID
+3. 硬编码的公钥ID（line 70）：`"PUB_KEY_ID_0117401704292026031300212083003200"`
 
 ### 3.3 影响的功能模块
 
@@ -202,9 +215,17 @@ const [inputs, setInputs] = useState({
   label={t('微信支付平台公钥')}
   placeholder={t('请输入微信支付平台公钥（PEM格式）')}
   autosize={{ minRows: 3, maxRows: 6 }}
-  type="password"
   rules={[
-    { required: true, message: t('请输入微信支付平台公钥') }
+    { required: true, message: t('请输入微信支付平台公钥') },
+    {
+      validator: (rule, value) => {
+        if (!value) return true; // required已经检查了
+        if (!value.includes('-----BEGIN PUBLIC KEY-----')) {
+          return t('公钥格式错误，应为PEM格式');
+        }
+        return true;
+      }
+    }
   ]}
 />
 
@@ -217,6 +238,11 @@ const [inputs, setInputs] = useState({
   ]}
 />
 ```
+
+**验证说明**：
+- 公钥字段移除 `type="password"`，因为公钥本身不敏感，隐藏反而不便于管理员验证是否复制正确
+- 添加格式验证，检查是否包含 PEM 头部标记
+- 公钥ID保持简单的必填验证
 
 #### 4.1.3 更新配置提交逻辑
 
@@ -297,8 +323,9 @@ const currentInputs = {
 
 对于已有的微信支付配置：
 1. 系统管理员需要在配置界面补充 `WechatPublicKey` 和 `WechatPublicKeyID`
-2. 在补充配置前，支付功能会失败并提示"配置不完整"
+2. **重要**：在补充配置前，支付功能会失败并提示"配置不完整"，建议在低流量时段进行升级
 3. 无需数据迁移，仅需添加新配置
+4. 配置完成后立即生效，无需重启服务
 
 ### 6.2 配置完整性提示
 
@@ -309,12 +336,18 @@ const currentInputs = {
 ### 7.1 单元测试
 
 **后端**：
-- 测试 `initWechatClient()` 函数
-  - 完整配置下的正常初始化
-  - 缺少公钥配置的错误处理
-  - 公钥格式错误的错误处理（由 SDK 的 `utils.LoadPublicKey()` 处理）
+虽然公钥解析逻辑由 SDK 提供无需测试，但仍需要集成测试来验证：
 
-**注意**：无需测试公钥解析功能，因为使用的是 WeChat Pay SDK 提供的 `utils.LoadPublicKey()` 函数，该函数已由 SDK 维护者测试。
+- 测试 `initWechatClient()` 函数的集成
+  - ✅ 完整配置下的正常初始化
+  - ✅ 缺少公钥配置的错误处理
+  - ✅ 公钥格式错误时错误消息正确传播
+  - ✅ 配置值正确从数据库传递到 SDK 函数
+  - ✅ 初始化的客户端能正常调用微信支付API
+
+**测试策略**：
+- 使用模拟配置测试各种错误场景
+- 使用真实配置测试完整的支付流程（集成测试）
 
 ### 7.2 集成测试
 
@@ -369,8 +402,9 @@ const currentInputs = {
 ### 9.1 敏感信息保护
 
 - 公钥内容和公钥ID存储在数据库中
-- 前端表单字段使用 `type="password"` 避免明文显示
-- 日志中不应输出完整的公钥内容
+- **注意**：公钥本身不是敏感信息（公开的），前端表单不使用 `type="password"`，便于管理员验证复制正确性
+- 商户私钥（`WechatPrivateKey`）保持 `type="password"` 保护
+- 日志中不应输出完整的私钥内容，公钥可以输出用于调试
 
 ### 9.2 配置访问控制
 
