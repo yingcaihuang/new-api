@@ -149,18 +149,22 @@ const UserVerificationModal = ({ visible, onCancel, user, t, onSuccess }) => {
       return;
     }
 
-    // Validate ID card
-    if (!validateIdCard(values.id_card_number)) {
+    // Convert ID card to uppercase and validate
+    const idCardUpper = values.id_card_number?.toUpperCase();
+    if (!validateIdCard(idCardUpper)) {
       showError(t('身份证号格式不正确'));
       return;
     }
 
     setSaving(true);
     try {
+      // Ensure status is a number
+      const statusValue = typeof values.status === 'string' ? parseInt(values.status) : values.status;
+
       const res = await API.put(`/api/user/${user.id}/verification`, {
         real_name: values.real_name,
-        id_card_number: values.id_card_number,
-        status: values.status,
+        id_card_number: idCardUpper,
+        status: statusValue,
       });
       if (res.data?.success) {
         showSuccess(t('保存成功'));
@@ -329,18 +333,23 @@ const UserVerificationModal = ({ visible, onCancel, user, t, onSuccess }) => {
             field='id_card_number'
             label={t('身份证号')}
             placeholder={t('请输入18位身份证号')}
+            transform={(value) => value?.toUpperCase()}
             rules={[
               { required: true, message: t('请输入身份证号') },
               {
                 validator: (rule, value) => {
                   if (!value) return true;
+
+                  // Value should already be uppercase due to transform
                   if (value.length !== 18) {
-                    return t('请输入18位身份证号');
+                    return Promise.reject(t('请输入18位身份证号'));
                   }
+
                   if (!validateIdCard(value)) {
-                    return t('身份证号格式不正确');
+                    return Promise.reject(t('身份证号格式不正确'));
                   }
-                  return true;
+
+                  return Promise.resolve();
                 },
               },
             ]}
@@ -354,6 +363,15 @@ const UserVerificationModal = ({ visible, onCancel, user, t, onSuccess }) => {
             placeholder={t('选择认证状态')}
             rules={[{ required: true }]}
             style={{ width: '100%' }}
+            onChange={(value) => {
+              // Ensure value is a number
+              if (formApiRef.current) {
+                formApiRef.current.setValue(
+                  'status',
+                  typeof value === 'string' ? parseInt(value) : value
+                );
+              }
+            }}
           >
             <Select.Option value={0}>{t('未验证')}</Select.Option>
             <Select.Option value={2}>{t('已验证')}</Select.Option>
