@@ -43,6 +43,8 @@ export default function SettingsPaymentGatewayWechat(props) {
     WechatAPIv3Key: '',
     WechatSerialNo: '',
     WechatPrivateKey: '',
+    WechatPublicKey: '',
+    WechatPublicKeyID: '',
     WechatServerURL: 'https://api.mch.weixin.qq.com',
     WechatMinTopUp: 1,
   });
@@ -58,6 +60,8 @@ export default function SettingsPaymentGatewayWechat(props) {
         WechatAPIv3Key: props.options.WechatAPIv3Key || '',
         WechatSerialNo: props.options.WechatSerialNo || '',
         WechatPrivateKey: props.options.WechatPrivateKey || '',
+        WechatPublicKey: props.options.WechatPublicKey || '',
+        WechatPublicKeyID: props.options.WechatPublicKeyID || '',
         WechatServerURL: props.options.WechatServerURL || 'https://api.mch.weixin.qq.com',
         WechatMinTopUp:
           props.options.WechatMinTopUp !== undefined
@@ -109,6 +113,18 @@ export default function SettingsPaymentGatewayWechat(props) {
         options.push({
           key: 'WechatPrivateKey',
           value: inputs.WechatPrivateKey,
+        });
+      }
+      if (inputs.WechatPublicKey !== originInputs.WechatPublicKey) {
+        options.push({
+          key: 'WechatPublicKey',
+          value: inputs.WechatPublicKey,
+        });
+      }
+      if (inputs.WechatPublicKeyID !== originInputs.WechatPublicKeyID) {
+        options.push({
+          key: 'WechatPublicKeyID',
+          value: inputs.WechatPublicKeyID,
         });
       }
       if (inputs.WechatServerURL !== originInputs.WechatServerURL) {
@@ -213,6 +229,34 @@ export default function SettingsPaymentGatewayWechat(props) {
             placeholder={t('请输入商户私钥（apiclient_key.pem内容）')}
             autosize={{ minRows: 3, maxRows: 6 }}
             type="password"
+          />
+
+          <Form.TextArea
+            field="WechatPublicKey"
+            label={t('微信支付平台公钥')}
+            placeholder={t('请输入微信支付平台公钥（PEM格式）')}
+            autosize={{ minRows: 3, maxRows: 6 }}
+            rules={[
+              { required: true, message: t('请输入微信支付平台公钥') },
+              {
+                validator: (rule, value) => {
+                  if (!value) return true;
+                  if (!value.includes('-----BEGIN PUBLIC KEY-----')) {
+                    return t('公钥格式错误，应为PEM格式');
+                  }
+                  return true;
+                }
+              }
+            ]}
+          />
+
+          <Form.Input
+            field="WechatPublicKeyID"
+            label={t('微信支付平台公钥ID')}
+            placeholder={t('请输入平台公钥ID，如：PUB_KEY_ID_xxx')}
+            rules={[
+              { required: true, message: t('请输入平台公钥ID') }
+            ]}
           />
 
           <Form.Input
