@@ -344,21 +344,24 @@ const currentInputs = {
 
 ## 7. 测试策略
 
-### 7.1 单元测试
+### 7.1 测试策略
 
-**后端**：
-虽然公钥解析逻辑由 SDK 提供无需测试，但仍需要集成测试来验证：
+**集成测试为主**：
+由于公钥解析由 SDK 提供，主要验证配置集成和端到端流程：
 
-- 测试 `initWechatClient()` 函数的集成
+- 测试 `initWechatClient()` 函数的配置集成
   - ✅ 完整配置下的正常初始化
   - ✅ 缺少公钥配置的错误处理
   - ✅ 公钥格式错误时错误消息正确传播
   - ✅ 配置值正确从数据库传递到 SDK 函数
-  - ✅ 初始化的客户端能正常调用微信支付API
 
-**测试策略**：
-- 使用模拟配置测试各种错误场景
-- 使用真实配置测试完整的支付流程（集成测试）
+**前端测试**：
+- 表单验证逻辑测试（PEM格式检查）
+- 配置保存流程测试
+
+**测试方法**：
+- 使用模拟配置测试各种错误场景（可选）
+- 使用真实配置测试完整的支付流程（必须）
 
 ### 7.2 集成测试
 
@@ -446,8 +449,8 @@ const currentInputs = {
 - [ ] 在 `SettingsPaymentGatewayWechat.jsx` 中：
   - [ ] 更新 `inputs` 状态定义
   - [ ] 更新 `useEffect` 初始化逻辑
-  - [ ] 添加 `WechatPublicKey` 表单字段（TextArea，password类型）
-  - [ ] 添加 `WechatPublicKeyID` 表单字段（Input）
+  - [ ] 添加 `WechatPublicKey` 表单字段（TextArea，**不使用** password类型，带PEM格式验证）
+  - [ ] 添加 `WechatPublicKeyID` 表单字段（Input，必填验证）
   - [ ] 更新 `submitWechatSetting()` 函数处理新字段
   - [ ] 添加配置说明文本（可选）
 
