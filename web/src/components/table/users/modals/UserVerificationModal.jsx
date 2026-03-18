@@ -17,7 +17,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 For commercial licensing, please contact support@quantumnous.com
 */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   Button,
   SideSheet,
@@ -86,7 +86,7 @@ const UserVerificationModal = ({ visible, onCancel, user, t, onSuccess }) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [showIdCard, setShowIdCard] = useState(false);
 
-  const formApi = Form.useFormApi();
+  const formApiRef = useRef();
 
   // Load verification data
   const loadVerification = async () => {
@@ -124,15 +124,17 @@ const UserVerificationModal = ({ visible, onCancel, user, t, onSuccess }) => {
 
   // Initialize form when entering edit mode
   useEffect(() => {
+    if (!formApiRef.current) return;
+
     if (isEditMode && verification) {
-      formApi.setValues({
+      formApiRef.current.setValues({
         real_name: verification.real_name || '',
         id_card: verification.id_card || '',
         status: verification.status || 'unverified',
       });
     } else if (isEditMode && !verification) {
       // New verification
-      formApi.setValues({
+      formApiRef.current.setValues({
         real_name: '',
         id_card: '',
         status: 'unverified',
@@ -302,7 +304,7 @@ const UserVerificationModal = ({ visible, onCancel, user, t, onSuccess }) => {
     return (
       <div className='p-4'>
         <Form
-          getFormApi={(api) => Object.assign(formApi, api)}
+          getFormApi={(api) => (formApiRef.current = api)}
           onSubmit={handleSave}
           labelPosition='left'
           labelAlign='right'
