@@ -63,9 +63,10 @@ MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA...
 
 ### 2.3 配置验证
 
-在 `initWechatClient()` 函数中更新配置完整性检查：
+在 `initWechatClient()` 函数**开头**更新配置完整性检查，替换现有的验证逻辑（当前在 line 37-39）：
 
 ```go
+// 配置完整性检查（包含新增的公钥字段）
 if !setting.WechatEnabled ||
    setting.WechatMchID == "" ||
    setting.WechatAPIv3Key == "" ||
@@ -75,6 +76,8 @@ if !setting.WechatEnabled ||
     return nil, errors.New("微信支付未启用或配置不完整")
 }
 ```
+
+**位置说明**：在函数的第一步进行验证，避免后续不必要的处理。
 
 ## 3. 后端实现设计
 
@@ -97,11 +100,12 @@ func LoadPublicKey(publicKeyStr string) (publicKey *rsa.PublicKey, err error)
 
 ### 3.2 修改 `initWechatClient()` 函数
 
-**主要改动**：
+**主要改动**（完整的修改后的函数）：
 
 ```go
 func initWechatClient() (*core.Client, error) {
     // 1. 配置完整性检查（包含新增的公钥字段）
+    // 位置：函数开头，替换现有的检查（line 37-39）
     if !setting.WechatEnabled ||
        setting.WechatMchID == "" ||
        setting.WechatAPIv3Key == "" ||
@@ -118,12 +122,14 @@ func initWechatClient() (*core.Client, error) {
     }
 
     // 3. 加载微信支付平台公钥（新增，使用SDK提供的函数）
+    // 变量名：使用 wechatPublicKey 而非 mchPublicKey，清晰表明这是平台公钥
     wechatPublicKey, err := utils.LoadPublicKey(setting.WechatPublicKey)
     if err != nil {
         return nil, fmt.Errorf("加载微信支付平台公钥失败: %v", err)
     }
 
     // 4. 使用 WithWechatPayPublicKeyAuthCipher 初始化客户端
+    // 位置：替换现有的初始化代码（line 57-77）
     ctx := context.Background()
     client, err := core.NewClient(
         ctx,
@@ -132,7 +138,7 @@ func initWechatClient() (*core.Client, error) {
             setting.WechatSerialNo,
             mchPrivateKey,
             setting.WechatPublicKeyID,
-            wechatPublicKey,
+            wechatPublicKey,  // 使用新加载的平台公钥
         ),
     )
     if err != nil {
@@ -142,6 +148,11 @@ func initWechatClient() (*core.Client, error) {
     return client, nil
 }
 ```
+
+**关键点**：
+- 变量命名使用 `wechatPublicKey` 而非 `mchPublicKey`，与配置字段名 `WechatPublicKey` 保持一致
+- 配置检查在函数最开始，快速失败
+- 所有硬编码的值都替换为配置值
 
 **需要删除/修复的代码**：
 1. 硬编码的公钥文件路径加载（line 51-54）：
