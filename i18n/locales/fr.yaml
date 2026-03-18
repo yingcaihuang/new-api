@@ -5,3 +5,12 @@ email.verification.subject: "Verification de votre adresse e-mail {{.SystemName}
 email.verification.content: "<p>Bonjour,</p><p>Vous avez demande la verification de votre adresse e-mail pour {{.SystemName}}.</p><p>Votre code de verification est : <strong>{{.Code}}</strong></p><p>Ce code est valable pendant {{.Minutes}} minutes. Si vous n'etes pas a l'origine de cette demande, vous pouvez ignorer cet e-mail.</p>"
 email.password_reset.subject: "Reinitialisation de votre mot de passe {{.SystemName}}"
 email.password_reset.content: "<p>Bonjour,</p><p>Vous avez demande la reinitialisation du mot de passe de votre compte {{.SystemName}}.</p><p>Cliquez <a href='{{.Link}}'>ici</a> pour definir un nouveau mot de passe.</p><p>Si le lien n'est pas cliquable, copiez puis collez l'URL suivante dans votre navigateur :<br> {{.Link}} </p><p>Ce lien est valable pendant {{.Minutes}} minutes. Si vous n'etes pas a l'origine de cette demande, vous pouvez ignorer cet e-mail.</p>"
+
+# User verification messages
+user.verification_required: "Veuillez completer la verification d'identite avant d'utiliser cette fonctionnalite"
+user.verification_already_submitted: "Vous avez deja soumis la verification d'identite"
+user.verification_invalid_id_card: "Format de numero d'identification invalide"
+user.verification_submit_success: "Verification d'identite soumise avec succes"
+user.verification.not_found: "Utilisateur introuvable ou non vérifié"
+user.verification.update_success: "Informations de vérification mises à jour avec succès"
+user.verification.delete_success: "Informations de vérification effacées"

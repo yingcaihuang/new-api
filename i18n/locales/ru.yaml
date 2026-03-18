@@ -5,3 +5,12 @@ email.verification.subject: "{{.SystemName}} Подтверждение email"
 email.verification.content: "<p>Здравствуйте! Вы выполняете подтверждение email для {{.SystemName}}.</p><p>Ваш код подтверждения: <strong>{{.Code}}</strong></p><p>Код действителен {{.Minutes}} минут. Если это были не вы, просто проигнорируйте это письмо.</p>"
 email.password_reset.subject: "{{.SystemName}} Сброс пароля"
 email.password_reset.content: "<p>Здравствуйте! Вы выполняете сброс пароля для {{.SystemName}}.</p><p>Нажмите <a href='{{.Link}}'>сюда</a>, чтобы сбросить пароль.</p><p>Если ссылка не открывается, скопируйте и вставьте URL в браузер:<br> {{.Link}} </p><p>Ссылка действительна {{.Minutes}} минут. Если это были не вы, проигнорируйте это письмо.</p>"
+
+# User verification messages
+user.verification_required: "Пожалуйста, завершите верификацию личности перед использованием этой функции"
+user.verification_already_submitted: "Вы уже отправили верификацию личности"
+user.verification_invalid_id_card: "Неверный формат номера удостоверения личности"
+user.verification_submit_success: "Верификация личности успешно отправлена"
+user.verification.not_found: "Пользователь не найден или не верифицирован"
+user.verification.update_success: "Информация о верификации успешно обновлена"
+user.verification.delete_success: "Информация о верификации удалена"

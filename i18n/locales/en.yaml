@@ -90,6 +90,13 @@ user.wechat_id_empty: "WeChat ID is empty!"
 user.telegram_id_empty: "Telegram ID is empty!"
 user.telegram_not_bound: "This Telegram account is not bound"
 user.linux_do_id_empty: "Linux DO ID is empty!"
+user.verification_required: "Please complete real name verification before using this feature"
+user.verification_already_submitted: "You have already submitted real name verification"
+user.verification_invalid_id_card: "Invalid ID card number format"
+user.verification_submit_success: "Real name verification submitted successfully"
+user.verification.not_found: "User not found or not verified"
+user.verification.update_success: "Verification information updated successfully"
+user.verification.delete_success: "Verification information cleared"
 
 # Email messages
 email.verification.subject: "{{.SystemName}} Email Verification"

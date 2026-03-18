@@ -5,3 +5,12 @@ email.verification.subject: "{{.SystemName}} メール認証"
 email.verification.content: "<p>こんにちは、{{.SystemName}} のメール認証を実行しています。</p><p>認証コード: <strong>{{.Code}}</strong></p><p>このコードの有効期限は {{.Minutes}} 分です。心当たりがない場合はこのメールを無視してください。</p>"
 email.password_reset.subject: "{{.SystemName}} パスワード再設定"
 email.password_reset.content: "<p>こんにちは、{{.SystemName}} のパスワード再設定を実行しています。</p><p><a href='{{.Link}}'>こちら</a> をクリックしてパスワードを再設定してください。</p><p>リンクをクリックできない場合は、次の URL をブラウザに貼り付けて開いてください:<br> {{.Link}} </p><p>このリンクの有効期限は {{.Minutes}} 分です。心当たりがない場合はこのメールを無視してください。</p>"
+
+# User verification messages
+user.verification_required: "この機能を使用する前に本人確認を完了してください"
+user.verification_already_submitted: "すでに本人確認を提出しています"
+user.verification_invalid_id_card: "ID番号の形式が正しくありません"
+user.verification_submit_success: "本人確認が正常に送信されました"
+user.verification.not_found: "ユーザーが見つからないか、認証されていません"
+user.verification.update_success: "本人確認情報が正常に更新されました"
+user.verification.delete_success: "本人確認情報がクリアされました"
