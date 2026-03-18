@@ -103,6 +103,8 @@ func InitOptionMap() {
 	common.OptionMap["WechatPrivateKey"] = setting.WechatPrivateKey
 	common.OptionMap["WechatServerURL"] = setting.WechatServerURL
 	common.OptionMap["WechatMinTopUp"] = strconv.Itoa(setting.WechatMinTopUp)
+	common.OptionMap["WechatPublicKey"] = setting.WechatPublicKey
+	common.OptionMap["WechatPublicKeyID"] = setting.WechatPublicKeyID
 	common.OptionMap["TopupGroupRatio"] = common.TopupGroupRatio2JSONString()
 	common.OptionMap["Chats"] = setting.Chats2JsonString()
 	common.OptionMap["AutoGroups"] = setting.AutoGroups2JsonString()
@@ -399,6 +401,10 @@ func updateOptionMap(key string, value string) (err error) {
 		setting.WechatSerialNo = value
 	case "WechatPrivateKey":
 		setting.WechatPrivateKey = value
+	case "WechatPublicKey":
+		setting.WechatPublicKey = value
+	case "WechatPublicKeyID":
+		setting.WechatPublicKeyID = value
 	case "WechatServerURL":
 		setting.WechatServerURL = value
 	case "WechatMinTopUp":
