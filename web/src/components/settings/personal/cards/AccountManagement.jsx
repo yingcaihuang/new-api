@@ -39,7 +39,7 @@ import {
   IconDelete,
 } from '@douyinfe/semi-icons';
 import { SiTelegram, SiWechat, SiLinux, SiDiscord } from 'react-icons/si';
-import { UserPlus, ShieldCheck } from 'lucide-react';
+import { UserPlus, ShieldCheck, IdCard } from 'lucide-react';
 import TelegramLoginButton from 'react-telegram-login';
 import {
   API,
@@ -53,6 +53,7 @@ import {
   getOAuthProviderIcon,
 } from '../../../../helpers';
 import TwoFASetting from '../components/TwoFASetting';
+import RealNameVerification from '../components/RealNameVerification';
 
 const AccountManagement = ({
   t,
@@ -765,6 +766,19 @@ const AccountManagement = ({
               </Space>
             </div>
           </div>
+        </TabPane>
+
+        {/* 实名认证 Tab */}
+        <TabPane
+          tab={
+            <div className='flex items-center'>
+              <IdCard size={16} className='mr-2' />
+              {t('实名认证')}
+            </div>
+          }
+          itemKey='verification'
+        >
+          <RealNameVerification t={t} userState={userState} />
         </TabPane>
       </Tabs>
     </Card>

@@ -48,6 +48,20 @@ func SubscriptionRequestEpay(c *gin.Context) {
 	}
 
 	userId := c.GetInt("id")
+
+	// 实名认证检查
+	if common.RealNameVerificationEnabled {
+		user, err := model.GetUserById(userId, true)
+		if err != nil {
+			common.ApiError(c, err)
+			return
+		}
+		if user.VerificationStatus != model.VerificationStatusApproved {
+			common.ApiErrorMsg(c, "请先完成实名认证后再购买订阅套餐")
+			return
+		}
+	}
+
 	if plan.MaxPurchasePerUser > 0 {
 		count, err := model.CountUserSubscriptionsByPlan(userId, plan.Id)
 		if err != nil {

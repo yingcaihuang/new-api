@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/QuantumNous/new-api/common"
 	"github.com/QuantumNous/new-api/dto"
@@ -17,6 +18,12 @@ import (
 )
 
 const UserNameMaxLength = 20
+
+// 实名认证状态常量
+const (
+	VerificationStatusNone     = 0 // 未认证
+	VerificationStatusApproved = 2 // 已通过（自动通过）
+)
 
 // User if you add sensitive fields, don't forget to clean them in setupLogin function.
 // Otherwise, the sensitive information will be saved on local storage in plain text!
@@ -50,6 +57,11 @@ type User struct {
 	Setting          string         `json:"setting" gorm:"type:text;column:setting"`
 	Remark           string         `json:"remark,omitempty" gorm:"type:varchar(255)" validate:"max=255"`
 	StripeCustomer   string         `json:"stripe_customer" gorm:"type:varchar(64);column:stripe_customer;index"`
+	// 实名认证字段
+	RealName           string     `json:"real_name,omitempty" gorm:"type:varchar(100);comment:真实姓名"`
+	IdCardNumber       string     `json:"id_card_number,omitempty" gorm:"type:varchar(255);comment:身份证号(加密存储)"`
+	VerificationStatus int        `json:"verification_status" gorm:"type:int;default:0;comment:认证状态:0-未认证,2-已通过"`
+	VerificationTime   *time.Time `json:"verification_time,omitempty" gorm:"comment:认证通过时间"`
 }
 
 func (user *User) ToBaseUser() *UserBase {

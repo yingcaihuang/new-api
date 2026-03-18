@@ -164,6 +164,28 @@ func RequestCreemPay(c *gin.Context) {
 		c.JSON(200, gin.H{"message": "error", "data": "参数错误"})
 		return
 	}
+
+	// 实名认证检查
+	userId := c.GetInt("id")
+	if common.RealNameVerificationEnabled {
+		log.Printf("实名认证检查: 开关已启用, 用户ID=%d", userId)
+		user, err := model.GetUserById(userId, true)
+		if err != nil {
+			log.Printf("实名认证检查: 获取用户信息失败, 错误=%v", err)
+			c.JSON(200, gin.H{"message": "error", "data": "获取用户信息失败"})
+			return
+		}
+		log.Printf("实名认证检查: 用户=%s, 认证状态=%d, 期望状态=%d", user.Username, user.VerificationStatus, model.VerificationStatusApproved)
+		if user.VerificationStatus != model.VerificationStatusApproved {
+			log.Printf("实名认证检查: 用户未通过实名认证, 拒绝充值请求")
+			c.JSON(200, gin.H{"message": "error", "data": "请先完成实名认证后再使用充值功能"})
+			return
+		}
+		log.Printf("实名认证检查: 用户已通过实名认证, 允许充值")
+	} else {
+		log.Printf("实名认证检查: 开关未启用, 跳过检查")
+	}
+
 	creemAdaptor.RequestPay(c, &req)
 }
 

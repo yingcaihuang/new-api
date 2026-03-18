@@ -29,3 +29,6 @@ data/
 .gomodcache/
 .gocache-temp
 .gopath
+
+*.md
+!README.*

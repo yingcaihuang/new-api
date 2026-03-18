@@ -193,6 +193,20 @@ func RequestEpay(c *gin.Context) {
 	}
 
 	id := c.GetInt("id")
+
+	// 实名认证检查
+	if common.RealNameVerificationEnabled {
+		user, err := model.GetUserById(id, true)
+		if err != nil {
+			c.JSON(200, gin.H{"message": "error", "data": "获取用户信息失败"})
+			return
+		}
+		if user.VerificationStatus != model.VerificationStatusApproved {
+			c.JSON(200, gin.H{"message": "error", "data": "请先完成实名认证后再使用充值功能"})
+			return
+		}
+	}
+
 	group, err := model.GetUserGroup(id, true)
 	if err != nil {
 		c.JSON(200, gin.H{"message": "error", "data": "获取用户分组失败"})

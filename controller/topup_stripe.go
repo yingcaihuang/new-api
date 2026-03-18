@@ -142,6 +142,21 @@ func RequestStripePay(c *gin.Context) {
 		c.JSON(200, gin.H{"message": "error", "data": "参数错误"})
 		return
 	}
+
+	// 实名认证检查
+	if common.RealNameVerificationEnabled {
+		userId := c.GetInt("id")
+		user, err := model.GetUserById(userId, true)
+		if err != nil {
+			c.JSON(200, gin.H{"message": "error", "data": "获取用户信息失败"})
+			return
+		}
+		if user.VerificationStatus != model.VerificationStatusApproved {
+			c.JSON(200, gin.H{"message": "error", "data": "请先完成实名认证后再使用充值功能"})
+			return
+		}
+	}
+
 	stripeAdaptor.RequestPay(c, &req)
 }
 

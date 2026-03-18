@@ -64,6 +64,14 @@ func SubscriptionRequestCreemPay(c *gin.Context) {
 		return
 	}
 
+	// 实名认证检查
+	if common.RealNameVerificationEnabled {
+		if user.VerificationStatus != model.VerificationStatusApproved {
+			common.ApiErrorMsg(c, "请先完成实名认证后再购买订阅套餐")
+			return
+		}
+	}
+
 	if plan.MaxPurchasePerUser > 0 {
 		count, err := model.CountUserSubscriptionsByPlan(userId, plan.Id)
 		if err != nil {

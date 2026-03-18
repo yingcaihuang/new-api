@@ -56,6 +56,7 @@ export default function GeneralSettings(props) {
     DefaultCollapseSidebar: false,
     DemoSiteEnabled: false,
     SelfUseModeEnabled: false,
+    RealNameVerificationEnabled: false,
     'token_setting.max_user_tokens': 1000,
   });
   const refForm = useRef();
@@ -127,7 +128,10 @@ export default function GeneralSettings(props) {
   };
 
   useEffect(() => {
-    const currentInputs = {};
+    // 先从初始inputs创建副本，确保所有字段都存在
+    const currentInputs = { ...inputs };
+
+    // 用后端返回的值覆盖
     for (let key in props.options) {
       if (Object.keys(inputs).includes(key)) {
         currentInputs[key] = props.options[key];
@@ -285,6 +289,19 @@ export default function GeneralSettings(props) {
                   checkedText='｜'
                   uncheckedText='〇'
                   onChange={handleFieldChange('SelfUseModeEnabled')}
+                />
+              </Col>
+            </Row>
+            <Row gutter={16}>
+              <Col xs={24} sm={12} md={8} lg={8} xl={8}>
+                <Form.Switch
+                  field={'RealNameVerificationEnabled'}
+                  label={t('启用实名认证')}
+                  extraText={t('开启后，用户需完成实名认证才能使用充值和订阅功能')}
+                  size='default'
+                  checkedText='｜'
+                  uncheckedText='〇'
+                  onChange={handleFieldChange('RealNameVerificationEnabled')}
                 />
               </Col>
             </Row>
