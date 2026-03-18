@@ -69,45 +69,22 @@ if !setting.WechatEnabled ||
 
 ## 3. 后端实现设计
 
-### 3.1 公钥解析函数
+### 3.1 使用 SDK 提供的公钥加载函数
 
-新增辅助函数 `loadPublicKeyFromString()` 用于从字符串解析RSA公钥：
+**无需自定义实现**：WeChat Pay SDK 已经提供了 `utils.LoadPublicKey()` 函数用于从字符串加载公钥。
+
+该函数位于 `github.com/wechatpay-apiv3/wechatpay-go/utils` 包中：
 
 ```go
-import (
-    "crypto/rsa"
-    "crypto/x509"
-    "encoding/pem"
-    "errors"
-    "fmt"
-)
-
-// loadPublicKeyFromString 从PEM格式字符串加载RSA公钥
-func loadPublicKeyFromString(publicKeyStr string) (*rsa.PublicKey, error) {
-    block, _ := pem.Decode([]byte(publicKeyStr))
-    if block == nil {
-        return nil, errors.New("解析公钥失败：无效的PEM格式")
-    }
-
-    pub, err := x509.ParsePKIXPublicKey(block.Bytes)
-    if err != nil {
-        return nil, fmt.Errorf("解析公钥失败: %v", err)
-    }
-
-    rsaPub, ok := pub.(*rsa.PublicKey)
-    if !ok {
-        return nil, errors.New("公钥类型错误：期望RSA公钥")
-    }
-
-    return rsaPub, nil
-}
+// LoadPublicKey 通过公钥的文本内容加载公钥
+func LoadPublicKey(publicKeyStr string) (publicKey *rsa.PublicKey, err error)
 ```
 
-**实现细节**：
-1. 使用 `pem.Decode()` 解析PEM格式
-2. 使用 `x509.ParsePKIXPublicKey()` 解析公钥
-3. 类型断言确保是RSA公钥
-4. 提供清晰的错误信息帮助调试
+**函数功能**：
+- 接受 PEM 格式的公钥字符串
+- 返回 `*rsa.PublicKey` 类型
+- 内置错误处理和格式验证
+- 与 `utils.LoadPrivateKey()` 保持一致的使用方式
 
 ### 3.2 修改 `initWechatClient()` 函数
 
@@ -131,8 +108,8 @@ func initWechatClient() (*core.Client, error) {
         return nil, fmt.Errorf("加载商户私钥失败: %v", err)
     }
 
-    // 3. 加载微信支付平台公钥（新增）
-    mchPublicKey, err := loadPublicKeyFromString(setting.WechatPublicKey)
+    // 3. 加载微信支付平台公钥（新增，使用SDK提供的函数）
+    mchPublicKey, err := utils.LoadPublicKey(setting.WechatPublicKey)
     if err != nil {
         return nil, fmt.Errorf("加载微信支付平台公钥失败: %v", err)
     }
@@ -177,16 +154,20 @@ func initWechatClient() (*core.Client, error) {
 
 ### 3.3 影响的功能模块
 
-所有调用 `initWechatClient()` 的功能都会自动使用新的认证方式：
+**已验证**：所有调用 `initWechatClient()` 的功能都会自动使用新的认证方式。
 
-- ✅ `RequestWechatPay()` - 充值支付
-- ✅ `QueryWechatOrder()` - 充值订单查询
-- ✅ `SubscriptionRequestWechatPay()` - 订阅支付（在 `controller/subscription_payment_wechat.go`）
-- ✅ `SubscriptionQueryWechatOrder()` - 订阅订单查询
+通过代码验证，以下函数都调用了共享的 `initWechatClient()` 函数：
+
+- ✅ `RequestWechatPay()` - 充值支付 (line 141)
+- ✅ `QueryWechatOrder()` - 充值订单查询 (line 244)
+- ✅ `SubscriptionRequestWechatPay()` - 订阅支付，位于 `controller/subscription_payment_wechat.go` (line 87)
+- ✅ `SubscriptionQueryWechatOrder()` - 订阅订单查询 (line 272)
 
 **不受影响的部分**：
 - `WechatNotify()` - 使用独立的 `notify.NewRSANotifyHandler()`，不依赖 `initWechatClient()`
 - `SubscriptionWechatNotify()` - 同上
+
+**结论**：修改 `initWechatClient()` 函数后，所有微信支付相关功能（充值和订阅）都会自动切换到新的认证方式，无需额外改动。
 
 ## 4. 前端实现设计
 
@@ -328,16 +309,12 @@ const currentInputs = {
 ### 7.1 单元测试
 
 **后端**：
-- 测试 `loadPublicKeyFromString()` 函数
-  - 正常的PEM格式公钥
-  - 无效的PEM格式
-  - 非RSA公钥（如EC公钥）
-  - 空字符串
-
 - 测试 `initWechatClient()` 函数
   - 完整配置下的正常初始化
   - 缺少公钥配置的错误处理
-  - 公钥格式错误的错误处理
+  - 公钥格式错误的错误处理（由 SDK 的 `utils.LoadPublicKey()` 处理）
+
+**注意**：无需测试公钥解析功能，因为使用的是 WeChat Pay SDK 提供的 `utils.LoadPublicKey()` 函数，该函数已由 SDK 维护者测试。
 
 ### 7.2 集成测试
 
@@ -412,15 +389,13 @@ const currentInputs = {
 
 ### 后端
 - [ ] 在 `setting/payment_wechat.go` 中新增 `WechatPublicKey` 和 `WechatPublicKeyID` 字段
-- [ ] 在 `controller/payment_wechat.go` 中实现 `loadPublicKeyFromString()` 函数
-- [ ] 修改 `initWechatClient()` 函数：
+- [ ] 修改 `controller/payment_wechat.go` 中的 `initWechatClient()` 函数：
   - [ ] 添加新字段的配置检查
-  - [ ] 调用 `loadPublicKeyFromString()` 加载公钥
-  - [ ] 移除硬编码的公钥文件路径
-  - [ ] 移除硬编码的公钥ID
-  - [ ] 删除注释掉的 `WithWechatPayAutoAuthCipher` 代码
-  - [ ] 使用 `WithWechatPayPublicKeyAuthCipher` 初始化
-- [ ] 添加必要的 import（`crypto/rsa`, `crypto/x509`, `encoding/pem`）
+  - [ ] 使用 `utils.LoadPublicKey()` 加载公钥（无需自定义函数）
+  - [ ] 移除硬编码的公钥文件路径 `utils.LoadPublicKeyWithPath("/Users/feng/pub_key.pem")`
+  - [ ] 移除硬编码的公钥ID `"PUB_KEY_ID_0117401704292026031300212083003200"`
+  - [ ] 删除注释掉的 `WithWechatPayAutoAuthCipher` 代码块
+  - [ ] 确认使用 `WithWechatPayPublicKeyAuthCipher` 初始化，参数从配置读取
 
 ### 前端
 - [ ] 在 `SettingsPaymentGatewayWechat.jsx` 中：
